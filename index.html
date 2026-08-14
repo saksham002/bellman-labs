@@ -18,9 +18,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
     * { animation: none !important; transition: none !important; }
   }
 
@@ -57,8 +55,10 @@
   .top-inner {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    padding: 1.1rem 0;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.05rem 0;
+    flex-wrap: wrap;
   }
   .wordmark {
     font-weight: 700;
@@ -66,15 +66,36 @@
     letter-spacing: 0.22em;
     color: var(--text);
   }
-  .top-meta {
+  nav.sections {
+    display: flex;
+    gap: 1.75rem;
+    overflow-x: auto;
+  }
+  nav.sections a {
     font-family: var(--mono);
     font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    color: var(--faint);
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    padding: 0.35rem 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
   }
-  .top-meta .sep { margin: 0 0.6rem; color: var(--line); }
+  nav.sections a:hover { color: var(--text); text-decoration: none; }
+  nav.sections a[aria-current="page"] {
+    color: var(--text);
+    border-bottom-color: var(--gold);
+  }
 
-  /* ---------- shared section furniture ---------- */
+  /* ---------- panels ---------- */
+  main { min-height: 68vh; }
+  .panel { display: none; }
+  .panel.active { display: block; animation: panelIn 0.35s ease; }
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .panel-body { padding: 5rem 0 6rem; }
+
   .eyebrow {
     font-family: var(--mono);
     font-size: 0.6875rem;
@@ -85,8 +106,8 @@
     margin-bottom: 1.5rem;
   }
 
-  /* ---------- hero ---------- */
-  .hero { padding: 8rem 0 0; }
+  /* ---------- hero / overview ---------- */
+  .hero { padding: 7rem 0 0; }
 
   h1 {
     font-weight: 700;
@@ -107,6 +128,23 @@
   }
   .lede strong { color: var(--text); font-weight: 600; }
 
+  .hero-cta {
+    margin-top: 2.5rem;
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    padding: 0.8rem 1.4rem;
+  }
+  .hero-cta:hover, .hero-cta:focus-visible {
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
   .tape {
     margin-top: 5.5rem;
     border-top: 1px solid var(--line);
@@ -125,10 +163,7 @@
   }
   .tape-label b { color: var(--gold-dim); font-weight: 400; }
 
-  /* ---------- sections ---------- */
-  section { padding: 7rem 0 0; }
-  section:last-of-type { padding-bottom: 6rem; }
-
+  /* ---------- shared section type ---------- */
   h2 {
     font-weight: 700;
     font-size: clamp(1.7rem, 3.4vw, 2.4rem);
@@ -150,6 +185,54 @@
     letter-spacing: -0.005em;
     border-left: 2px solid var(--gold);
     padding-left: 1.5rem;
+  }
+
+  /* ---------- diagrams ---------- */
+  .diagram {
+    margin-top: 3rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+  }
+  .flow {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .flow-tag {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    color: var(--faint);
+  }
+  .flow-tag.gold { color: var(--gold); }
+  .chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .node {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .node.em {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+  .flow.dim .node { color: var(--faint); border-style: dashed; }
+  .arrow {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--faint);
   }
 
   /* ---------- approach columns ---------- */
@@ -234,7 +317,6 @@
 
   /* ---------- footer ---------- */
   footer {
-    margin-top: 6rem;
     border-top: 1px solid var(--line);
     padding: 2.25rem 0 3rem;
     font-family: var(--mono);
@@ -242,105 +324,158 @@
     letter-spacing: 0.1em;
     color: var(--faint);
   }
-  footer .amber { color: var(--gold-dim); }
 
   @media (max-width: 760px) {
     .pillars, .founders { grid-template-columns: 1fr; gap: 2rem; }
     .use, .milestone { grid-template-columns: 1fr; gap: 0.5rem; }
-    .hero { padding-top: 4.5rem; }
-    section { padding-top: 4.5rem; }
-    .top-meta { display: none; }
+    .flow { grid-template-columns: 1fr; gap: 0.75rem; }
+    .hero { padding-top: 4rem; }
+    .panel-body { padding: 3.5rem 0 4.5rem; }
   }
 </style>
 
 <header class="top">
   <div class="wrap top-inner">
     <span class="wordmark">BELLMAN LABS</span>
-    <span class="top-meta">PRE-SEED<span class="sep">|</span>PITTSBURGH, PA<span class="sep">|</span>EST. 2026</span>
+    <nav class="sections" aria-label="Sections">
+      <a href="#overview" data-panel="overview">OVERVIEW</a>
+      <a href="#thesis" data-panel="thesis">THESIS</a>
+      <a href="#approach" data-panel="approach">APPROACH</a>
+      <a href="#funding" data-panel="funding">FUNDING</a>
+      <a href="#team" data-panel="team">TEAM</a>
+    </nav>
   </div>
 </header>
 
 <main>
-  <div class="wrap hero">
-    <p class="eyebrow">Market-native intelligence</p>
-    <h1>A foundation model that trades.</h1>
-    <p class="lede">Language models became general by pretraining on raw text. Markets produce a larger, faster, harder stream, and it has no foundation model of its own. <strong>We are building it.</strong></p>
-  </div>
+  <section class="panel" id="panel-overview">
+    <div class="wrap hero">
+      <p class="eyebrow">Market-native intelligence</p>
+      <h1>A foundation model that trades.</h1>
+      <p class="lede">Language models became general by pretraining on raw text. Markets produce a larger, faster, harder stream, and it has no foundation model of its own. <strong>We are building it.</strong></p>
+      <a class="hero-cta" href="#thesis">READ THE THESIS →</a>
+    </div>
+    <div class="tape" aria-hidden="true">
+      <canvas id="tape"></canvas>
+      <span class="tape-label">SIM <b>·</b> L2 ORDER FLOW <b>·</b> ILLUSTRATIVE</span>
+    </div>
+    <div style="padding-bottom: 5rem;"></div>
+  </section>
 
-  <div class="tape" aria-hidden="true">
-    <canvas id="tape"></canvas>
-    <span class="tape-label">SIM <b>·</b> L2 ORDER FLOW <b>·</b> ILLUSTRATIVE</span>
-  </div>
-
-  <section class="wrap" id="thesis">
-    <h2>Trained on the market itself.</h2>
-    <div class="prose">
-      <p>Today's quantitative pipelines compress the market before a model ever sees it: raw order flow is distilled into hand-engineered signals, and the model's job is reduced to weighing them. Every feature is a human prior, and every prior is a ceiling.</p>
-      <p class="pull">We train on the raw stream — quotes, trades, order flow at tick resolution — and the model outputs trading decisions.</p>
-      <p>Reinforcement learning closes the loop: the objective is risk-adjusted performance, learned end-to-end against realistic market simulation. The shift that carried language models past feature-engineered NLP applies equally to markets. Executing it demands frontier-scale ML and microstructure fluency in one team.</p>
+  <section class="panel" id="panel-thesis">
+    <div class="wrap panel-body">
+      <h2>Trained on the market itself.</h2>
+      <div class="prose">
+        <p>Today's quantitative pipelines compress the market before a model ever sees it: raw order flow is distilled into hand-engineered signals, and the model's job is reduced to weighing them. Every feature is a human prior, and every prior is a ceiling.</p>
+        <p class="pull">We train on the raw stream — quotes, trades, order flow at tick resolution — and the model outputs trading decisions.</p>
+        <p>Reinforcement learning closes the loop: the objective is risk-adjusted performance, learned end-to-end against realistic market simulation. The shift that carried language models past feature-engineered NLP applies equally to markets. Executing it demands frontier-scale ML and microstructure fluency in one team.</p>
+      </div>
+      <div class="diagram" role="img" aria-label="Conventional pipelines route market data through hand-built features and a predictive model to produce signals. Bellman Labs routes the raw tick stream through one foundation model trained with reinforcement learning, producing trading decisions directly.">
+        <div class="flow dim">
+          <span class="flow-tag">CONVENTIONAL</span>
+          <div class="chain">
+            <span class="node">MARKET DATA</span><span class="arrow">→</span>
+            <span class="node">HAND-BUILT FEATURES</span><span class="arrow">→</span>
+            <span class="node">PREDICTIVE MODEL</span><span class="arrow">→</span>
+            <span class="node">SIGNALS</span><span class="arrow">→</span>
+            <span class="node">EXECUTION</span>
+          </div>
+        </div>
+        <div class="flow">
+          <span class="flow-tag gold">BELLMAN</span>
+          <div class="chain">
+            <span class="node">RAW TICK STREAM</span><span class="arrow">→</span>
+            <span class="node em">FOUNDATION MODEL · RL</span><span class="arrow">→</span>
+            <span class="node">TRADING DECISIONS</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="wrap" id="approach">
-    <h2>Three commitments.</h2>
-    <div class="pillars">
-      <div class="pillar">
-        <h3>Market-native pretraining</h3>
-        <p>A sequence model pretrained on raw, tick-level market data: order books, trades, flow. The representation is learned from the stream itself.</p>
-      </div>
-      <div class="pillar">
-        <h3>Decision-native output</h3>
-        <p>The model emits actions — quotes, orders, positions — trained with RL against profit and risk. Alpha, sizing, and execution live in one policy.</p>
-      </div>
-      <div class="pillar">
-        <h3>Deep, not wide</h3>
-        <p>One market, one asset class, mastered first. Depth compounds. Expansion follows once the first market is won.</p>
+  <section class="panel" id="panel-approach">
+    <div class="wrap panel-body">
+      <h2>Three commitments.</h2>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>Market-native pretraining</h3>
+          <p>A sequence model pretrained on raw, tick-level market data: order books, trades, flow. The representation is learned from the stream itself.</p>
+        </div>
+        <div class="pillar">
+          <h3>Decision-native output</h3>
+          <p>The model emits actions — quotes, orders, positions — trained with RL against profit and risk. Alpha, sizing, and execution live in one policy.</p>
+        </div>
+        <div class="pillar">
+          <h3>Deep, not wide</h3>
+          <p>One market, one asset class, mastered first. Depth compounds. Expansion follows once the first market is won.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="wrap" id="funding">
-    <h2>From thesis to backtested model.</h2>
-    <div class="prose">
-      <p>Before this system touches capital, it must earn its way through years of history. The pre-seed round funds that proof.</p>
+  <section class="panel" id="panel-funding">
+    <div class="wrap panel-body">
+      <h2>From thesis to backtested model.</h2>
+      <div class="prose">
+        <p>Before this system touches capital, it must earn its way through years of history. The pre-seed round funds that proof.</p>
+      </div>
+      <dl class="uses">
+        <div class="use">
+          <dt>DATA</dt>
+          <dd><strong>Licensed historical market data</strong> at tick-level depth — the pretraining corpus. Years of microstructure across the target asset class, the market-native equivalent of a web-scale text crawl.</dd>
+        </div>
+        <div class="use">
+          <dt>COMPUTE</dt>
+          <dd><strong>Training and simulation infrastructure</strong> — pretraining the foundation model, then RL fine-tuning inside a high-fidelity market simulator built from that same historical stream.</dd>
+        </div>
+        <div class="use">
+          <dt>VALIDATION</dt>
+          <dd><strong>Adversarial backtesting</strong> — out-of-sample, regime-split, cost-aware. We hold ourselves to prop-desk standards of evidence.</dd>
+        </div>
+      </dl>
+      <div class="diagram" role="img" aria-label="Roadmap: the pre-seed phase covers data acquisition, pretraining, RL fine-tuning, and backtesting. The seed phase takes the model to live trading.">
+        <div class="flow">
+          <span class="flow-tag gold">PRE-SEED</span>
+          <div class="chain">
+            <span class="node">DATA</span><span class="arrow">→</span>
+            <span class="node">PRETRAIN</span><span class="arrow">→</span>
+            <span class="node">RL FINE-TUNE</span><span class="arrow">→</span>
+            <span class="node em">BACKTESTED MODEL</span>
+          </div>
+        </div>
+        <div class="flow dim">
+          <span class="flow-tag">SEED</span>
+          <div class="chain">
+            <span class="node">LIVE CAPITAL</span>
+          </div>
+        </div>
+      </div>
+      <dl class="milestone">
+        <dt>MILESTONE</dt>
+        <dd>A market-native foundation model, specialized to one asset class, with a rigorously backtested trading record. <span class="dim">The seed round takes it to market.</span></dd>
+      </dl>
     </div>
-    <dl class="uses">
-      <div class="use">
-        <dt>DATA</dt>
-        <dd><strong>Licensed historical market data</strong> at tick-level depth — the pretraining corpus. Years of microstructure across the target asset class, the market-native equivalent of a web-scale text crawl.</dd>
-      </div>
-      <div class="use">
-        <dt>COMPUTE</dt>
-        <dd><strong>Training and simulation infrastructure</strong> — pretraining the foundation model, then RL fine-tuning inside a high-fidelity market simulator built from that same historical stream.</dd>
-      </div>
-      <div class="use">
-        <dt>VALIDATION</dt>
-        <dd><strong>Adversarial backtesting</strong> — out-of-sample, regime-split, cost-aware. We hold ourselves to prop-desk standards of evidence.</dd>
-      </div>
-    </dl>
-    <dl class="milestone">
-      <dt>MILESTONE</dt>
-      <dd>A market-native foundation model, specialized to one asset class, with a rigorously backtested trading record. <span class="dim">The seed round takes it to market.</span></dd>
-    </dl>
   </section>
 
-  <section class="wrap" id="team">
-    <h2>Frontier ML meets the trading floor.</h2>
-    <div class="founders">
-      <div class="founder">
-        <p class="name">Saksham Singh</p>
-        <p class="cred">AIRe, CMU · M.S. Machine Learning · ex-Quadeye</p>
-        <p>Production high-frequency trading experience at Quadeye, one of India's leading proprietary trading firms.</p>
-      </div>
-      <div class="founder">
-        <p class="name">Bhavya Agrawalla</p>
-        <p class="cred">AIRe, CMU · Ph.D., Computer Science Dept.</p>
-        <p>Doctoral researcher in the Computer Science Department at Carnegie Mellon.</p>
-      </div>
-      <div class="founder">
-        <p class="name">Kshitiz</p>
-        <p class="cred">AIRe, CMU · M.S. Robotics</p>
-        <p>Roboticist by training, specializing in sequential decision-making under uncertainty.</p>
+  <section class="panel" id="panel-team">
+    <div class="wrap panel-body">
+      <h2>Frontier ML meets the trading floor.</h2>
+      <div class="founders">
+        <div class="founder">
+          <p class="name">Saksham Singh</p>
+          <p class="cred">AIRe, CMU · M.S. Machine Learning · ex-Quadeye</p>
+          <p>Production high-frequency trading experience at Quadeye, one of India's leading proprietary trading firms.</p>
+        </div>
+        <div class="founder">
+          <p class="name">Bhavya Agrawalla</p>
+          <p class="cred">AIRe, CMU · Ph.D., Computer Science Dept.</p>
+          <p>Doctoral researcher in the Computer Science Department at Carnegie Mellon.</p>
+        </div>
+        <div class="founder">
+          <p class="name">Kshitiz</p>
+          <p class="cred">AIRe, CMU · M.S. Robotics</p>
+          <p>Roboticist by training, specializing in sequential decision-making under uncertainty.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -355,6 +490,31 @@
 
 <script>
 (function () {
+  /* ---------- panel navigation ---------- */
+  const PANELS = ['overview', 'thesis', 'approach', 'funding', 'team'];
+  const links = document.querySelectorAll('nav.sections a');
+
+  function show(id) {
+    if (PANELS.indexOf(id) === -1) id = 'overview';
+    PANELS.forEach(function (p) {
+      const el = document.getElementById('panel-' + p);
+      el.classList.toggle('active', p === id);
+    });
+    links.forEach(function (a) {
+      if (a.getAttribute('data-panel') === id) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    window.scrollTo(0, 0);
+    if (id === 'overview' && window.__tapeRefresh) {
+      requestAnimationFrame(window.__tapeRefresh);
+    }
+  }
+
+  function fromHash() { show(location.hash.replace('#', '') || 'overview'); }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+
+  /* ---------- order-book tape ---------- */
   const canvas = document.getElementById('tape');
   const ctx = canvas.getContext('2d');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -381,6 +541,7 @@
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = canvas.clientWidth; H = canvas.clientHeight;
+    if (W === 0) return; // panel hidden; refreshed on show
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     cols = Math.ceil(W / CELL_W) + 1;
@@ -396,6 +557,7 @@
   }
 
   function render() {
+    if (W === 0 || ticks.length === 0) return;
     ctx.clearRect(0, 0, W, H);
     // Recenter the visible band on the recent mid so the walk stays on screen.
     let avg = 0;
@@ -448,6 +610,8 @@
     ctx.fillRect(lx, (lm - last.spread) * CELL_H, CELL_W - GAP, CELL_H - GAP);
   }
 
+  window.__tapeRefresh = function () { resize(); render(); };
+
   resize();
   render();
   window.addEventListener('resize', function () { resize(); render(); });
@@ -456,6 +620,7 @@
     let lastT = 0;
     (function loop(now) {
       if (now - lastT > 140) {
+        if (W === 0) resize();
         ticks.push(makeTick());
         ticks.shift();
         render();
