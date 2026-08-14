@@ -1,14 +1,15 @@
 <title>Bellman Labs</title>
 <style>
   :root {
-    --ink: #0B0E13;
-    --surface: #121721;
-    --line: #1F2735;
-    --text: #E9E4D6;
-    --muted: #7E8794;
-    --faint: #545D6B;
-    --amber: #E8A33D;
-    --amber-dim: #8A6526;
+    --ink: #05070B;
+    --surface: #0A0E15;
+    --line: #151B26;
+    --text: #E4DFD2;
+    --muted: #79818D;
+    --faint: #4C545F;
+    --amber: #D99A36;
+    --amber-dim: #7D5B22;
+    --ask: #5C7590;
     --up: #3E9B6E;
     --down: #B85450;
     --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
@@ -49,7 +50,7 @@
     border-bottom: 1px solid var(--line);
     position: sticky;
     top: 0;
-    background: rgba(11, 14, 19, 0.92);
+    background: rgba(5, 7, 11, 0.92);
     backdrop-filter: blur(6px);
     z-index: 10;
   }
@@ -76,7 +77,6 @@
     color: var(--amber);
     margin-bottom: 1.75rem;
   }
-  .eyebrow::before { content: "// "; color: var(--faint); }
 
   h1 {
     font-family: var(--mono);
@@ -108,6 +108,7 @@
     margin-top: 4rem;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
+    background: var(--surface);
     position: relative;
   }
   .tape canvas { display: block; width: 100%; height: 220px; }
@@ -124,16 +125,6 @@
   /* ---------- sections ---------- */
   section { padding: 4.5rem 0 0; }
   section:last-of-type { padding-bottom: 4rem; }
-
-  .sec-label {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: 1.25rem;
-  }
-  .sec-label::before { content: "// "; color: var(--faint); }
 
   h2 {
     font-family: var(--mono);
@@ -238,6 +229,7 @@
     color: var(--muted);
     font-style: italic;
   }
+  .team-note a { font-style: normal; }
   .team-note b { color: var(--text); font-style: normal; font-weight: 600; }
 
   /* ---------- footer ---------- */
@@ -249,10 +241,6 @@
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     color: var(--faint);
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
   }
   footer .amber { color: var(--amber-dim); }
 
@@ -275,7 +263,7 @@
   <div class="wrap hero">
     <p class="eyebrow">market-native intelligence</p>
     <h1>A foundation model that trades.<span aria-hidden="true"> <span class="cursor"></span></span></h1>
-    <p class="lede">Language models became general by pretraining on raw text. Markets produce a larger, faster, harder stream — and it has never had a foundation model of its own. <strong>We are building it.</strong></p>
+    <p class="lede">Language models became general by pretraining on raw text. Markets produce a larger, faster, harder stream, and it has no foundation model of its own. <strong>We are building it.</strong></p>
   </div>
 
   <div class="tape" aria-hidden="true">
@@ -284,39 +272,36 @@
   </div>
 
   <section class="wrap" id="thesis">
-    <p class="sec-label">thesis</p>
-    <h2>Trading models shouldn't read features. They should read the market.</h2>
+    <h2>Trained on the market itself.</h2>
     <div class="prose">
-      <p>Today's quantitative pipelines compress the market before a model ever sees it: raw order flow is distilled into hand-engineered signals, and the model's job is reduced to weighing them. Every feature is a human prior — and a ceiling.</p>
-      <p class="pull">We train directly on the raw stream — quotes, trades, order flow at the tick level — and the model outputs trading decisions, not forecasts.</p>
-      <p>Reinforcement learning closes the loop: the objective is not next-token likelihood but risk-adjusted performance, learned end-to-end against realistic market simulation. The same shift that took language models past feature-engineered NLP applies to markets — it simply hasn't been executed yet, because it demands both frontier-scale ML and microstructure fluency in one team.</p>
+      <p>Today's quantitative pipelines compress the market before a model ever sees it: raw order flow is distilled into hand-engineered signals, and the model's job is reduced to weighing them. Every feature is a human prior, and every prior is a ceiling.</p>
+      <p class="pull">We train on the raw stream — quotes, trades, order flow at tick resolution — and the model outputs trading decisions.</p>
+      <p>Reinforcement learning closes the loop: the objective is risk-adjusted performance, learned end-to-end against realistic market simulation. The shift that carried language models past feature-engineered NLP applies equally to markets. Executing it demands frontier-scale ML and microstructure fluency in one team.</p>
     </div>
   </section>
 
   <section class="wrap" id="approach">
-    <p class="sec-label">approach</p>
     <h2>Three commitments.</h2>
     <div class="pillars">
       <div class="pillar">
         <h3>Market-native pretraining</h3>
-        <p>A sequence model pretrained on raw, tick-level market data — order books, trades, flow — not on engineered features. The representation is learned, not designed.</p>
+        <p>A sequence model pretrained on raw, tick-level market data: order books, trades, flow. The representation is learned from the stream itself.</p>
       </div>
       <div class="pillar">
         <h3>Decision-native output</h3>
-        <p>The model emits actions — quotes, orders, positions — trained with RL against profit and risk. No separate alpha, sizing, and execution stack to glue together.</p>
+        <p>The model emits actions — quotes, orders, positions — trained with RL against profit and risk. Alpha, sizing, and execution live in one policy.</p>
       </div>
       <div class="pillar">
         <h3>Deep, not wide</h3>
-        <p>One market, one asset class, mastered first. In trading, depth compounds and generality dilutes. Expansion comes after the first market is won.</p>
+        <p>One market, one asset class, mastered first. Depth compounds. Expansion follows once the first market is won.</p>
       </div>
     </div>
   </section>
 
   <section class="wrap" id="funding">
-    <p class="sec-label">what pre-seed unlocks</p>
     <h2>From thesis to backtested model.</h2>
     <div class="prose">
-      <p>We are pre-revenue by design: before this system touches capital, it has to earn its way through history. The pre-seed round buys exactly two things — and a disciplined process around them.</p>
+      <p>Before this system touches capital, it must earn its way through years of history. The pre-seed round funds that proof.</p>
     </div>
     <dl class="uses">
       <div class="use">
@@ -329,38 +314,37 @@
       </div>
       <div class="use">
         <dt>VALIDATION</dt>
-        <dd><strong>Adversarial backtesting</strong> — out-of-sample, regime-split, cost-aware. We hold ourselves to prop-desk standards of evidence, not benchmark-paper standards.</dd>
+        <dd><strong>Adversarial backtesting</strong> — out-of-sample, regime-split, cost-aware. We hold ourselves to prop-desk standards of evidence.</dd>
       </div>
     </dl>
-    <p class="milestone">MILESTONE <span class="dim">—</span> a market-native foundation model, specialized to one asset class, with a rigorously backtested live-trading case. <span class="dim">// the seed round takes it to market.</span></p>
+    <p class="milestone">MILESTONE <span class="dim">—</span> a market-native foundation model, specialized to one asset class, with a rigorously backtested trading record. <span class="dim">The seed round takes it to market.</span></p>
   </section>
 
   <section class="wrap" id="team">
-    <p class="sec-label">team</p>
     <h2>Frontier ML meets the trading floor.</h2>
     <div class="founders">
       <div class="founder">
         <p class="name">Saksham Singh</p>
         <p class="cred">M.S. Machine Learning, CMU · ex-Quadeye</p>
-        <p>Production high-frequency trading experience at Quadeye, one of India's leading proprietary trading firms — the microstructure fluency this thesis depends on.</p>
+        <p>Production high-frequency trading experience at Quadeye, one of India's leading proprietary trading firms.</p>
       </div>
       <div class="founder">
         <p class="name">Bhavya Agrawalla</p>
         <p class="cred">Ph.D., Computer Science Dept., CMU</p>
-        <p>Doctoral researcher in the Computer Science Department at Carnegie Mellon — the theoretical depth behind the learning stack.</p>
+        <p>Doctoral researcher in the Computer Science Department at Carnegie Mellon.</p>
       </div>
       <div class="founder">
         <p class="name">Kshitiz</p>
         <p class="cred">M.S. Robotics, CMU</p>
-        <p>Roboticist by training — sequential decision-making under uncertainty in the physical world, applied to the fastest decision loop in finance.</p>
+        <p>Roboticist by training, specializing in sequential decision-making under uncertainty.</p>
       </div>
     </div>
-    <p class="team-note">All three founders are members of an <b>AI research lab at Carnegie Mellon University</b>, where this work began.</p>
+    <p class="team-note">All three founders are members of the <b><a href="https://cmu-aire.github.io" rel="noopener">AIRe Lab</a></b> — Artificial Intelligence and Reinforcement Learning — at Carnegie Mellon University, where this work began.</p>
   </section>
 </main>
 
 <footer>
-  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; padding:0 1.5rem;">
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
     <span><span class="amber">▲</span> BELLMAN LABS — 2026</span>
     <span>CARNEGIE MELLON UNIVERSITY · PITTSBURGH, PA</span>
   </div>
@@ -372,93 +356,108 @@
   const ctx = canvas.getContext('2d');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let W = 0, H = 0, dpr = 1;
+  // Discrete limit-order-book tape: each column is one tick of time, each row a
+  // quantized price level. Bid depth below, ask depth above, trade prints on top.
+  const CELL_W = 8, CELL_H = 10, GAP = 2;
+  let W = 0, H = 0, dpr = 1, cols = 0, rows = 0;
+
+  let midLevel = 0, spread = 1;
+  const ticks = [];
+
+  function makeTick() {
+    const r = Math.random();
+    if (r < 0.18) midLevel += 1;
+    else if (r < 0.36) midLevel -= 1;
+    if (Math.random() < 0.12) spread = 1 + Math.floor(Math.random() * 2);
+    let trade = 0;
+    if (Math.random() < 0.22) trade = Math.random() < 0.5 ? 1 : -1; // 1 = buy at ask
+    const depthSeed = Math.random() * 1000;
+    return { mid: midLevel, spread: spread, trade: trade, seed: depthSeed };
+  }
+
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(W / CELL_W) + 1;
+    rows = Math.floor(H / CELL_H);
+    while (ticks.length < cols) ticks.unshift(makeTick());
+    while (ticks.length > cols) ticks.shift();
   }
-  resize();
-  window.addEventListener('resize', function () { resize(); render(); });
 
-  // Simulated mid-price walk with bid/ask band and trade prints.
-  const N = 480;
-  let mid = 0, vol = 1;
-  const mids = [], spreads = [], prints = [];
-  function step() {
-    vol = Math.max(0.4, Math.min(2.5, vol + (Math.random() - 0.5) * 0.12));
-    mid += (Math.random() - 0.5) * vol - mid * 0.004;
-    const spread = 0.9 + Math.random() * 0.9 * vol;
-    mids.push(mid); spreads.push(spread);
-    prints.push(Math.random() < 0.16 ? (Math.random() < 0.5 ? 1 : -1) : 0);
-    if (mids.length > N) { mids.shift(); spreads.shift(); prints.shift(); }
+  // Deterministic per-cell noise from the column seed and row index.
+  function noise(seed, k) {
+    const x = Math.sin(seed * 12.9898 + k * 78.233) * 43758.5453;
+    return x - Math.floor(x);
   }
-  for (let i = 0; i < N; i++) step();
 
   function render() {
     ctx.clearRect(0, 0, W, H);
+    // Recenter the visible band on the recent mid so the walk stays on screen.
+    let avg = 0;
+    for (let c = 0; c < ticks.length; c++) avg += ticks[c].mid;
+    avg /= ticks.length;
+    const centerRow = Math.round(rows / 2 + avg);
 
-    // faint horizontal grid
-    ctx.strokeStyle = 'rgba(31, 39, 53, 0.8)';
-    ctx.lineWidth = 1;
-    for (let gy = 1; gy < 5; gy++) {
-      const y = (H / 5) * gy;
-      ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); ctx.stroke();
+    for (let c = 0; c < ticks.length; c++) {
+      const t = ticks[c];
+      const x = c * CELL_W;
+      const midRow = centerRow - Math.round(t.mid);
+      const bestAsk = midRow - t.spread;
+      const bestBid = midRow + t.spread;
+
+      for (let rIdx = 0; rIdx < rows; rIdx++) {
+        const y = rIdx * CELL_H;
+        let fill = null;
+
+        if (rIdx <= bestAsk) {
+          const dist = bestAsk - rIdx;
+          const a = Math.exp(-dist / 3.2) * (0.35 + 0.65 * noise(t.seed, rIdx));
+          if (a > 0.07) fill = 'rgba(92, 117, 144, ' + (a * 0.5).toFixed(3) + ')';
+        } else if (rIdx >= bestBid) {
+          const dist = rIdx - bestBid;
+          const a = Math.exp(-dist / 3.2) * (0.35 + 0.65 * noise(t.seed, rIdx));
+          if (a > 0.07) fill = 'rgba(217, 154, 54, ' + (a * 0.5).toFixed(3) + ')';
+        }
+        if (fill) {
+          ctx.fillStyle = fill;
+          ctx.fillRect(x, y, CELL_W - GAP, CELL_H - GAP);
+        }
+      }
+
+      if (t.trade !== 0) {
+        const tr = t.trade > 0 ? bestAsk : bestBid;
+        if (tr >= 0 && tr < rows) {
+          ctx.fillStyle = t.trade > 0 ? 'rgba(62, 155, 110, 0.9)' : 'rgba(184, 84, 80, 0.9)';
+          ctx.fillRect(x, tr * CELL_H, CELL_W - GAP, CELL_H - GAP);
+        }
+      }
     }
 
-    let lo = Infinity, hi = -Infinity;
-    for (let i = 0; i < mids.length; i++) {
-      lo = Math.min(lo, mids[i] - spreads[i]);
-      hi = Math.max(hi, mids[i] + spreads[i]);
-    }
-    const pad = (hi - lo) * 0.18 + 1e-6;
-    lo -= pad; hi += pad;
-    const X = i => (i / (N - 1)) * W;
-    const Y = v => H - ((v - lo) / (hi - lo)) * H;
-
-    // bid/ask band
-    ctx.beginPath();
-    for (let i = 0; i < mids.length; i++) {
-      const x = X(i), y = Y(mids[i] + spreads[i]);
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    for (let i = mids.length - 1; i >= 0; i--) {
-      ctx.lineTo(X(i), Y(mids[i] - spreads[i]));
-    }
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(232, 163, 61, 0.06)';
-    ctx.fill();
-
-    // trade prints
-    for (let i = 0; i < mids.length; i++) {
-      if (!prints[i]) continue;
-      ctx.fillStyle = prints[i] > 0 ? 'rgba(62, 155, 110, 0.55)' : 'rgba(184, 84, 80, 0.55)';
-      const y = Y(mids[i] + prints[i] * spreads[i] * 0.7);
-      ctx.fillRect(X(i) - 1, y - 1, 2.5, 2.5);
-    }
-
-    // mid-price line
-    ctx.beginPath();
-    for (let i = 0; i < mids.length; i++) {
-      const x = X(i), y = Y(mids[i]);
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = '#E8A33D';
-    ctx.lineWidth = 1.4;
-    ctx.stroke();
-
-    // endpoint marker
-    const ex = X(mids.length - 1), ey = Y(mids[mids.length - 1]);
-    ctx.fillStyle = '#E8A33D';
-    ctx.beginPath(); ctx.arc(ex - 1, ey, 2.6, 0, Math.PI * 2); ctx.fill();
+    // Emphasize the newest column's best bid/ask.
+    const last = ticks[ticks.length - 1];
+    const lx = (ticks.length - 1) * CELL_W;
+    const lm = centerRow - Math.round(last.mid);
+    ctx.fillStyle = '#D99A36';
+    ctx.fillRect(lx, (lm + last.spread) * CELL_H, CELL_W - GAP, CELL_H - GAP);
+    ctx.fillStyle = '#8FA5BC';
+    ctx.fillRect(lx, (lm - last.spread) * CELL_H, CELL_W - GAP, CELL_H - GAP);
   }
 
+  resize();
   render();
+  window.addEventListener('resize', function () { resize(); render(); });
+
   if (!reduced) {
-    let last = 0;
-    (function loop(t) {
-      if (t - last > 55) { step(); render(); last = t; }
+    let lastT = 0;
+    (function loop(now) {
+      if (now - lastT > 140) {
+        ticks.push(makeTick());
+        ticks.shift();
+        render();
+        lastT = now;
+      }
       requestAnimationFrame(loop);
     })(0);
   }
