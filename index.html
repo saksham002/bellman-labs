@@ -28,8 +28,10 @@
   </div>
 </nav>
 
+<div class="deck" id="deck">
+
 <!-- ================= HERO ================= -->
-<header class="hero" id="top">
+<section class="slide hero" id="top" data-label="pi*">
   <canvas id="book" aria-hidden="true"></canvas>
   <div class="book-probe" id="probe" aria-hidden="true"></div>
   <div class="hero-inner">
@@ -37,16 +39,14 @@
     <h1>The first high-frequency AI trading model</h1>
     <div class="tagline" id="tagline">MARKET-NATIVE INTELLIGENCE</div>
   </div>
-  <div class="hero-cue" aria-hidden="true"><i></i><span>Live book</span></div>
-</header>
+  <div class="hero-cue" aria-hidden="true"><i></i><span>Scroll to flip</span></div>
+</section>
 
-<main>
-
-<!-- ================= 01 PROBLEM ================= -->
-<section class="slide" id="problem">
+<!-- ================= PROBLEM ================= -->
+<section class="slide" id="problem" data-label="Problem">
   <div class="wrap">
     <div class="slide-head" data-reveal>
-      <div class="eyebrow">01 · The problem</div>
+      <div class="eyebrow">The problem</div>
       <h2>The <em>problem</em> with classical HFT</h2>
       <p class="lede">A classical high-frequency stack is a chain of hand-written stages. Tap a stage to see where the human sits.</p>
     </div>
@@ -62,7 +62,7 @@
       <b>Hand-built features</b>Order-flow imbalance, microprice, realized volatility, pair spreads. Each one is a formula a person wrote down. The model can only see the market through them.
     </div>
 
-    <div class="thesis" data-reveal>
+    <div class="thesis" data-reveal style="--i:6">
       <div class="thesis-lines">
         <div>Every feature is a human prior.</div>
         <div class="ceiling">Every prior is a ceiling</div>
@@ -70,169 +70,160 @@
       <svg class="ceiling-chart" viewBox="0 0 520 300" role="img" aria-label="Conceptual chart: a feature-based pipeline flattens under a human-prior ceiling while an end-to-end model keeps improving with data and compute.">
         <line class="axis" x1="40" y1="260" x2="500" y2="260"/>
         <line class="axis" x1="40" y1="20" x2="40" y2="260"/>
-        <text class="lbl" x="500" y="284" text-anchor="end">DATA · COMPUTE →</text>
+        <text class="lbl" x="500" y="286" text-anchor="end">DATA · COMPUTE →</text>
         <text class="lbl" x="34" y="30" text-anchor="end" transform="rotate(-90 34 30)" dx="-4">CAPABILITY ↑</text>
         <line class="cap" x1="40" y1="150" x2="500" y2="150"/>
-        <text class="lbl" x="48" y="142" fill="#7A6136">HUMAN-PRIOR CEILING</text>
+        <text class="lbl" x="48" y="141" fill="#7A6136">HUMAN-PRIOR CEILING</text>
         <path class="classical" d="M40 258 C 120 230, 170 180, 240 165 S 420 152, 500 151"/>
         <path class="e2e" d="M40 258 C 160 250, 250 220, 330 150 S 450 60, 500 30"/>
-        <text class="tag" x="360" y="178" fill="#5C7590">HAND-BUILT FEATURES</text>
+        <text class="tag" x="500" y="184" text-anchor="end" fill="#5C7590">HAND-BUILT FEATURES</text>
         <text class="tag" x="404" y="52" fill="#C39A55" text-anchor="end">END-TO-END · pi*</text>
       </svg>
     </div>
   </div>
 </section>
 
-<!-- ================= 02 SOLUTION ================= -->
-<section class="slide" id="solution">
+<!-- ================= SOLUTION ================= -->
+<section class="slide" id="solution" data-label="Solution">
   <div class="wrap">
     <div class="slide-head" data-reveal>
-      <div class="eyebrow">02 · The solution</div>
+      <div class="eyebrow">The solution</div>
       <h2>Orderbook data in. Orders out</h2>
-      <p class="lede">No features. The raw exchange feed streams into one model, packet by packet. The model keeps a KV cache of the book's history and emits an order when it reads a critical event. Click a feed type to inject a packet.</p>
+      <p class="lede">No features. The raw exchange feed streams into one model, packet by packet, and the model keeps a KV cache of the book's history. Click a feed type to inject a packet.</p>
     </div>
 
-    <div class="flow-wrap" data-reveal>
-      <div class="diagram-scroll"><svg class="flow" id="flow" viewBox="0 0 1200 330" role="img" aria-label="Order book feed streams add, cancel, modify and trade packets into a model with a persistent KV cache. On a critical event the model emits a readout token with price and direction, and an order is sent.">
+    <div class="panel" data-reveal style="--i:1">
+      <div class="diagram-scroll"><svg class="diagram flow" id="flow" viewBox="0 44 1200 278" role="img" aria-label="Order book feed streams add, cancel, modify and trade packets into a model with a persistent KV cache. On a critical event the model emits a readout token with price and direction, and an order is sent.">
         <defs>
           <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5C7590"/></marker>
           <marker id="arr-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#C39A55"/></marker>
         </defs>
 
-        <!-- invisible motion paths -->
-        <path id="p-feed-0" d="M190 101 H225 V182 H530" fill="none" stroke="none"/>
-        <path id="p-feed-1" d="M190 155 H225 V182 H530" fill="none" stroke="none"/>
-        <path id="p-feed-2" d="M190 209 H225 V182 H530" fill="none" stroke="none"/>
-        <path id="p-feed-3" d="M190 263 H225 V182 H530" fill="none" stroke="none"/>
-        <path id="p-out" d="M780 182 H1100" fill="none" stroke="none"/>
+        <path id="p-feed-0" d="M190 101 H225 V182 H520" fill="none" stroke="none"/>
+        <path id="p-feed-1" d="M190 155 H225 V182 H520" fill="none" stroke="none"/>
+        <path id="p-feed-2" d="M190 209 H225 V182 H520" fill="none" stroke="none"/>
+        <path id="p-feed-3" d="M190 263 H225 V182 H520" fill="none" stroke="none"/>
+        <path id="p-out" d="M790 182 H1105" fill="none" stroke="none"/>
 
         <text class="lbl" x="0" y="62">ORDER BOOK FEED</text>
 
-        <!-- wires -->
         <path class="wire" d="M190 101 H225 V263 M190 155 H225 M190 209 H225 M190 263 H225"/>
         <path class="wire" d="M225 182 H260" marker-end="url(#arr)"/>
-        <path class="wire" d="M460 182 H530" marker-end="url(#arr)"/>
-        <path class="wire" d="M780 182 H900" marker-end="url(#arr)"/>
-        <path class="wire" d="M1070 182 H1100" marker-end="url(#arr)"/>
-        <path class="kv" d="M700 232 V280 H610 V236" marker-end="url(#arr-gold)"/>
-        <text class="lbl" x="655" y="304" text-anchor="middle" fill="#C39A55">KV CACHE PERSISTS</text>
+        <path class="wire" d="M460 182 H520" marker-end="url(#arr)"/>
+        <path class="wire" d="M790 182 H920" marker-end="url(#arr)"/>
+        <path class="wire" d="M1080 182 H1105" marker-end="url(#arr)"/>
+        <path class="kv" d="M700 238 V284 H610 V242" marker-end="url(#arr-gold)"/>
+        <text class="lbl" x="655" y="310" text-anchor="middle" fill="#C39A55">KV CACHE PERSISTS</text>
 
-        <!-- feeds -->
-        <g class="feed" data-i="0" data-k="A" tabindex="0" role="button" aria-label="Inject add-order packet"><rect class="box-r" x="0" y="80" width="190" height="42"/><text class="box-t" x="95" y="106" style="font-weight:400;font-size:12px">ADD ORDER</text></g>
-        <g class="feed" data-i="1" data-k="C" tabindex="0" role="button" aria-label="Inject cancel packet"><rect class="box-r" x="0" y="134" width="190" height="42"/><text class="box-t" x="95" y="160" style="font-weight:400;font-size:12px">CANCEL</text></g>
-        <g class="feed" data-i="2" data-k="M" tabindex="0" role="button" aria-label="Inject modify packet"><rect class="box-r" x="0" y="188" width="190" height="42"/><text class="box-t" x="95" y="214" style="font-weight:400;font-size:12px">MODIFY</text></g>
-        <g class="feed" data-i="3" data-k="T" tabindex="0" role="button" aria-label="Inject trade-print packet"><rect class="box-r" x="0" y="242" width="190" height="42"/><text class="box-t" x="95" y="268" style="font-weight:400;font-size:12px">TRADE PRINT</text></g>
+        <g class="feed" data-i="0" data-k="A" tabindex="0" role="button" aria-label="Inject add-order packet"><rect class="box-r" x="0" y="79" width="190" height="44"/><text class="box-t" x="95" y="106">ADD ORDER</text></g>
+        <g class="feed" data-i="1" data-k="C" tabindex="0" role="button" aria-label="Inject cancel packet"><rect class="box-r" x="0" y="133" width="190" height="44"/><text class="box-t" x="95" y="160">CANCEL</text></g>
+        <g class="feed" data-i="2" data-k="M" tabindex="0" role="button" aria-label="Inject modify packet"><rect class="box-r" x="0" y="187" width="190" height="44"/><text class="box-t" x="95" y="214">MODIFY</text></g>
+        <g class="feed" data-i="3" data-k="T" tabindex="0" role="button" aria-label="Inject trade-print packet"><rect class="box-r" x="0" y="241" width="190" height="44"/><text class="box-t" x="95" y="268">TRADE PRINT</text></g>
 
-        <!-- streamed -->
-        <g><rect class="box-r" x="260" y="147" width="200" height="70"/><text class="box-t" x="360" y="178">STREAMED IN</text><text class="box-t" x="360" y="198">PACKET BY PACKET</text></g>
+        <g><rect class="box-r" x="260" y="147" width="200" height="70"/><text class="box-t" x="360" y="178">STREAMED IN</text><text class="box-t" x="360" y="199">PACKET BY PACKET</text></g>
 
-        <!-- model -->
-        <g class="model" id="model"><rect class="box-r" x="530" y="132" width="250" height="100"/><text class="box-t" x="655" y="158">MODEL</text><text class="box-s" x="655" y="178">MAINTAINS KV CACHE</text><text class="box-s" x="655" y="193">+ ROLLING CONTEXT</text><g id="kvstrip"></g></g>
+        <g class="model" id="model"><rect class="box-r" x="520" y="126" width="270" height="112"/><text class="box-t" x="655" y="154">MODEL</text><text class="box-s" x="655" y="175">MAINTAINS KV CACHE</text><text class="box-s" x="655" y="192">+ ROLLING CONTEXT</text><g id="kvstrip"></g></g>
 
-        <text class="crit" id="crit" x="840" y="170">CRITICAL EVENT</text>
+        <text class="crit" id="crit" x="855" y="170">CRITICAL EVENT</text>
 
-        <!-- readout -->
-        <g><rect class="box-r" x="900" y="147" width="170" height="70"/><text class="box-t" x="985" y="178">READOUT TOKEN</text><text class="box-s" x="985" y="198">PRICE + DIRECTION</text></g>
+        <g><rect class="box-r" x="920" y="147" width="160" height="70"/><text class="box-t" x="1000" y="178">READOUT TOKEN</text><text class="box-s" x="1000" y="199">PRICE + DIRECTION</text></g>
 
-        <!-- order -->
-        <g class="order" id="order"><rect class="box-r" x="1100" y="147" width="100" height="70"/><text class="box-t" x="1150" y="178">ORDER</text><text class="box-s" x="1150" y="198">ORDER SENT</text></g>
+        <g class="order" id="order"><rect class="box-r" x="1105" y="147" width="95" height="70"/><text class="box-t" x="1152" y="178">ORDER</text><text class="box-s" x="1152" y="199">ORDER SENT</text></g>
 
         <g id="packets"></g>
       </svg></div>
 
-      <div class="flow-controls">
-        <div class="legend"><span>Forward path</span><span class="kv">KV cache loop</span></div>
-        <div class="ctl" id="speed">
-          <span>Feed</span>
-          <button data-rate="0" id="pause">Pause</button>
-          <button data-rate="1" class="on">1×</button>
-          <button data-rate="4">4×</button>
-          <button data-rate="16">16×</button>
+      <div class="flow-row">
+        <div>
+          <div class="legend"><span>Forward path</span><span class="kv">KV cache loop</span></div>
+          <div class="ctl" id="speed">
+            <span>Feed</span>
+            <button data-rate="0" id="pause">Pause</button>
+            <button data-rate="1" class="on">1×</button>
+            <button data-rate="4">4×</button>
+            <button data-rate="16">16×</button>
+          </div>
+          <p class="hint">Illustrative only: synthetic packets and a toy order rule, not the pi* model.</p>
         </div>
+        <div class="tape"><h4>Packets in</h4><ol id="tape-in"></ol></div>
+        <div class="tape"><h4>Orders out</h4><ol id="tape-out"></ol></div>
       </div>
-      <div class="tape">
-        <div><h4>Packets in</h4><ol id="tape-in"></ol></div>
-        <div><h4>Orders out</h4><ol id="tape-out"></ol></div>
-      </div>
-      <p class="hint">Illustrative simulation. Packets are synthetic; orders are emitted by a toy rule, not the pi* model.</p>
     </div>
   </div>
 </section>
 
-<!-- ================= 03 TRAINING ================= -->
-<section class="slide" id="training">
+<!-- ================= TRAINING ================= -->
+<section class="slide" id="training" data-label="Training">
   <div class="wrap">
     <div class="slide-head" data-reveal>
-      <div class="eyebrow">03 · The training stack</div>
+      <div class="eyebrow">The training stack</div>
       <h2>LLM recipe applied to HFT</h2>
-      <p class="lede">The same two-phase recipe that produced today's language models: pretrain on what experts already do, then let the model practice against a simulator until it finds strategies no human wrote down.</p>
+      <p class="lede">The recipe behind today's language models: pretrain on what experts already do, then practice against a simulator until the model finds strategies no human wrote down.</p>
     </div>
 
-    <div class="train-wrap" data-reveal>
+    <div class="panel" data-reveal style="--i:1">
       <div class="stepper" id="stepper" role="tablist" aria-label="Training phases">
         <button data-n="01" data-step="1" class="on" role="tab" aria-selected="true">Imitation learning</button>
         <button data-n="02" data-step="2" role="tab" aria-selected="false">Reinforcement learning</button>
         <button class="replay" id="replay">Replay</button>
       </div>
 
-      <div class="diagram-scroll"><svg class="train" id="train" viewBox="0 0 1200 390" role="img" aria-label="Human-generated alphas feed phase one, imitation learning, which produces a base policy that mimics expert trading. Phase two, reinforcement learning against trading simulators in a self-play loop, discovers new alphas beyond human play.">
+      <div class="diagram-scroll"><svg class="diagram train" id="train" viewBox="0 14 1200 374" role="img" aria-label="Human-generated alphas feed phase one, imitation learning, which produces a base policy that mimics expert trading. Phase two, reinforcement learning against trading simulators in a self-play loop, discovers new alphas beyond human play.">
         <defs>
           <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#C39A55"/></marker>
         </defs>
         <text class="lbl" x="0" y="42">HUMAN-GENERATED ALPHAS</text>
 
-        <g class="frame-1"><rect class="frame" x="270" y="44" width="490" height="240"/><text class="phase-lbl" x="515" y="30">PHASE 01</text></g>
-        <g class="frame-2"><rect class="frame" x="820" y="44" width="380" height="240"/><text class="phase-lbl" x="1010" y="30">PHASE 02</text></g>
+        <g><rect class="frame" x="270" y="44" width="490" height="250"/><text class="phase-lbl" x="515" y="30">PHASE 01</text></g>
+        <g><rect class="frame" x="818" y="44" width="382" height="250"/><text class="phase-lbl" x="1009" y="30">PHASE 02</text></g>
 
-        <!-- alphas -->
         <g class="alphas" id="alphas">
-          <g class="alpha"><rect class="pill" x="0" y="60" width="200" height="36"/><text class="pill-t" x="100" y="78">ORDER BOOK ALPHAS</text></g>
-          <g class="alpha"><rect class="pill" x="0" y="108" width="200" height="36"/><text class="pill-t" x="100" y="126">VOLATILITY ALPHAS</text></g>
-          <g class="alpha"><rect class="pill" x="0" y="156" width="200" height="36"/><text class="pill-t" x="100" y="174">PAIR ALPHAS</text></g>
-          <g class="alpha"><rect class="pill" x="0" y="204" width="200" height="36"/><text class="pill-t" x="100" y="222">SEQUENCE ALPHAS</text></g>
-          <g class="dots"><circle cx="100" cy="254" r="2"/><circle cx="100" cy="266" r="2"/><circle cx="100" cy="278" r="2"/></g>
-          <g class="disc" id="disc-1"><rect class="pill" x="0" y="292" width="200" height="36"/><text class="pill-t" x="100" y="310">α₅ · DISCOVERED</text></g>
-          <g class="disc" id="disc-2"><rect class="pill" x="0" y="340" width="200" height="36"/><text class="pill-t" x="100" y="358">α₆ · DISCOVERED</text></g>
+          <g><rect class="pill" x="0" y="59" width="200" height="38"/><text class="pill-t" x="100" y="78">ORDER BOOK ALPHAS</text></g>
+          <g><rect class="pill" x="0" y="107" width="200" height="38"/><text class="pill-t" x="100" y="126">VOLATILITY ALPHAS</text></g>
+          <g><rect class="pill" x="0" y="155" width="200" height="38"/><text class="pill-t" x="100" y="174">PAIR ALPHAS</text></g>
+          <g><rect class="pill" x="0" y="203" width="200" height="38"/><text class="pill-t" x="100" y="222">SEQUENCE ALPHAS</text></g>
+          <g class="dots-g"><circle cx="100" cy="254" r="2.2"/><circle cx="100" cy="266" r="2.2"/><circle cx="100" cy="278" r="2.2"/></g>
+          <g class="disc" id="disc-1"><rect class="pill" x="0" y="292" width="200" height="38"/><text class="pill-t" x="100" y="311">α₅ · DISCOVERED</text></g>
+          <g class="disc" id="disc-2"><rect class="pill" x="0" y="340" width="200" height="38"/><text class="pill-t" x="100" y="359">α₆ · DISCOVERED</text></g>
         </g>
 
-        <!-- wires -->
         <path class="wire draw" id="w-alphas" d="M200 78 H232 V222 M200 126 H232 M200 174 H232 M200 222 H232"/>
         <path class="wire draw" id="w-in" d="M232 150 H300" marker-end="url(#arr-g)"/>
         <path class="wire draw" id="w-il" d="M470 150 H530" marker-end="url(#arr-g)"/>
-        <path class="wire draw" id="w-bp" d="M730 150 H850" marker-end="url(#arr-g)"/>
-        <path class="wire draw" id="w-rl" d="M1010 150 H1050" marker-end="url(#arr-g)"/>
+        <path class="wire draw" id="w-bp" d="M730 150 H845" marker-end="url(#arr-g)"/>
+        <path class="wire draw" id="w-rl" d="M1013 150 H1043" marker-end="url(#arr-g)"/>
 
-        <!-- phase 1 nodes -->
         <g class="p1" id="p1">
-          <g><rect class="node" x="300" y="110" width="170" height="80"/><text class="node-t" x="385" y="146">IMITATION</text><text class="node-t" x="385" y="166">LEARNING</text></g>
-          <g><rect class="node" x="530" y="110" width="200" height="80"/><text class="node-t" x="630" y="140">BASE POLICY</text><text class="node-s" x="630" y="158">MIMICS EXPERT</text><text class="node-s" x="630" y="172">TRADING BEHAVIOR</text></g>
+          <g><rect class="node" x="300" y="110" width="170" height="80"/><text class="node-t" x="385" y="146">IMITATION</text><text class="node-t" x="385" y="168">LEARNING</text></g>
+          <g><rect class="node" x="530" y="110" width="200" height="80"/><text class="node-t" x="630" y="141">BASE POLICY</text><text class="node-s" x="630" y="161">MIMICS EXPERT</text><text class="node-s" x="630" y="178">TRADING BEHAVIOR</text></g>
         </g>
 
-        <!-- phase 2 nodes -->
         <g class="p2" id="p2">
-          <g><rect class="node rl" x="850" y="100" width="160" height="100"/><text class="node-t" x="930" y="136">REINFORCEMENT</text><text class="node-t" x="930" y="154">LEARNING</text><text class="node-s" x="930" y="176">EXPLORATION</text></g>
-          <path class="loop" d="M960 200 V240 H900 V204" marker-end="url(#arr-g)"/>
-          <text class="lbl" x="930" y="262" text-anchor="middle" fill="#C39A55">TRADING SIMULATORS</text>
-          <text class="lbl" x="930" y="278" text-anchor="middle" fill="#C39A55">SELF-PLAY LOOP</text>
-          <g><rect class="node new" x="1050" y="100" width="130" height="100"/><text class="node-t green" x="1115" y="140">NEW</text><text class="node-t green" x="1115" y="158">ALPHAS</text><text class="node-s" x="1115" y="180">BEYOND HUMAN PLAY</text></g>
+          <g><rect class="node rl" x="845" y="100" width="168" height="100"/><text class="node-t" x="929" y="137">REINFORCEMENT</text><text class="node-t" x="929" y="157">LEARNING</text><text class="node-s" x="929" y="180">EXPLORATION</text></g>
+          <path class="loop" d="M955 200 V240 H895 V204" marker-end="url(#arr-g)"/>
+          <text class="lbl" x="929" y="264" text-anchor="middle" fill="#C39A55">TRADING SIMULATORS</text>
+          <text class="lbl" x="929" y="282" text-anchor="middle" fill="#C39A55">SELF-PLAY LOOP</text>
+          <g><rect class="node new" x="1043" y="100" width="152" height="100"/><text class="node-t green" x="1119" y="139">NEW</text><text class="node-t green" x="1119" y="159">ALPHAS</text><text class="node-s" x="1119" y="182">BEYOND HUMAN PLAY</text></g>
         </g>
       </svg></div>
 
-      <div class="legend" style="margin-top:18px"><span>Training pipeline</span><span class="kv">Self-improvement</span></div>
-      <p class="step-copy" id="step-copy"><b>Phase 01 · Imitation learning.</b> Order-book, volatility, pair and sequence alphas that people already trade are the pretraining corpus. The base policy learns to mimic expert trading behavior directly from the raw feed.</p>
+      <div class="train-foot">
+        <div class="legend gold"><span>Training pipeline</span><span class="kv">Self-improvement</span></div>
+        <p class="step-copy" id="step-copy"><b>Phase 01 · Imitation learning.</b> Order-book, volatility, pair and sequence alphas that people already trade are the pretraining corpus. The base policy learns to mimic expert trading behavior directly from the raw feed.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ================= 04 WHY NOW ================= -->
-<section class="slide" id="why-now">
+<!-- ================= WHY NOW ================= -->
+<section class="slide" id="why-now" data-label="Why now">
   <div class="wrap">
     <div class="slide-head" data-reveal>
-      <div class="eyebrow">04 · Why now</div>
+      <div class="eyebrow">Why now</div>
       <h2>Faster simulation. Ultra-low latency inference</h2>
     </div>
 
-    <div data-reveal>
+    <div data-reveal style="--i:1">
       <div class="rail" aria-hidden="true">
         <div class="line"></div>
         <div class="pin train">TRAIN</div>
@@ -241,7 +232,7 @@
     </div>
 
     <div class="cards2">
-      <article class="card scale" data-reveal style="--i:1">
+      <article class="card scale" data-reveal style="--i:2">
         <div class="k">Scalable learning</div>
         <h3>GPU-native market simulation</h3>
         <div class="big">SCALE</div>
@@ -251,7 +242,7 @@
         <div class="eg">E.g. JAX-LOB (GPU-native RL)</div>
       </article>
 
-      <article class="card act" data-reveal style="--i:2">
+      <article class="card act" data-reveal style="--i:3">
         <div class="k">Deployable inference</div>
         <h3>Ultrafast inference hardware</h3>
         <div class="big">ACT</div>
@@ -265,7 +256,7 @@
             <rect class="blk" x="125" y="40" width="50" height="40" rx="3"/><text class="blk-t" x="150" y="60">MEMORY</text>
             <rect class="blk" x="180" y="40" width="50" height="40" rx="3"/><text class="blk-t" x="205" y="60">COMPUTE</text>
             <circle class="pulse" r="3.5"/>
-            <text class="lat" x="298" y="112">PACKET → ORDER</text>
+            <text class="lat" x="298" y="114">PACKET → ORDER</text>
           </svg>
         </div>
         <p>Whole model baked into custom silicon. Ultrafast inference makes AI HFT viable.</p>
@@ -273,53 +264,53 @@
       </article>
     </div>
 
-    <div class="foot-note" data-reveal><span>Evidence · JAX-LOB (GPU-native RL) · Taalas (model-specific inference)</span><span>05</span></div>
+    <div class="foot-note" data-reveal style="--i:4"><span>Evidence · JAX-LOB (GPU-native RL) · Taalas (model-specific inference)</span></div>
   </div>
 </section>
 
-<!-- ================= 05 ROADMAP ================= -->
-<section class="slide" id="roadmap">
+<!-- ================= ROADMAP ================= -->
+<section class="slide" id="roadmap" data-label="Roadmap">
   <div class="wrap">
     <div class="slide-head" data-reveal>
-      <div class="eyebrow">05 · Roadmap</div>
+      <div class="eyebrow">Roadmap</div>
       <h2>The pre-seed milestone is a backtested model</h2>
     </div>
 
-    <div data-reveal>
+    <div data-reveal style="--i:1">
       <div class="bands" aria-hidden="true"><span>Build</span><span class="prove">Prove</span><span class="scale">Scale</span></div>
       <div class="road-rail" aria-hidden="true">
         <div class="solid"></div><div class="dashed"></div>
-        <div class="n" style="left:10%;transition-delay:.3s">01</div>
-        <div class="n" style="left:30%;transition-delay:.6s">02</div>
-        <div class="n" style="left:50%;transition-delay:.9s">03</div>
-        <div class="n cur" style="left:70%;transition-delay:1.2s">04</div>
-        <div class="n next" style="left:90%;transition-delay:1.8s">05</div>
+        <div class="n" style="left:10%;transition-delay:.5s">01</div>
+        <div class="n" style="left:30%;transition-delay:.8s">02</div>
+        <div class="n" style="left:50%;transition-delay:1.1s">03</div>
+        <div class="n cur" style="left:70%;transition-delay:1.4s">04</div>
+        <div class="n next" style="left:90%;transition-delay:2s">05</div>
       </div>
     </div>
 
     <div class="milestones">
-      <div class="ms" data-reveal style="--i:1">
+      <div class="ms" data-reveal style="--i:2">
         <div class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
         <h3>Data</h3><p>books, orders, fills</p>
         <div class="status">This raise</div>
       </div>
-      <div class="ms" data-reveal style="--i:2">
+      <div class="ms" data-reveal style="--i:3">
         <div class="ico"><svg viewBox="0 0 24 24"><circle cx="4" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="12" cy="12" r="1.2"/><path d="M5.6 10.8L10.4 6.2M5.6 13.2l4.8 4.6M13.6 6.2l4.8 4.6M13.6 17.8l4.8-4.6M12 7v3.8M12 13.2V17"/></svg></div>
         <h3>Pretrain</h3><p>mimic expert trading</p>
         <div class="status">This raise</div>
       </div>
-      <div class="ms" data-reveal style="--i:3">
+      <div class="ms" data-reveal style="--i:4">
         <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
         <h3>Policy train</h3><p>practice in simulator</p>
         <div class="status">This raise</div>
       </div>
-      <div class="ms cur" data-reveal style="--i:4">
+      <div class="ms cur" data-reveal style="--i:5">
         <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><rect x="5" y="11" width="3.5" height="10"/><rect x="10.25" y="4" width="3.5" height="17"/><rect x="15.5" y="13" width="3.5" height="8"/></svg></div>
         <h3>Backtest</h3><p>after fees and slippage</p>
         <span class="chip-tag">Pre-seed</span>
         <div class="status">Milestone for this raise</div>
       </div>
-      <div class="ms next" data-reveal style="--i:5">
+      <div class="ms next" data-reveal style="--i:6">
         <div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="10" r="6"/><path d="M9 7v6M7 8.5h3a1.2 1.2 0 010 2.4H7"/><path d="M15.3 7.2A6 6 0 1 1 12.4 16.4"/></svg></div>
         <h3>Live trading</h3><p>own money</p>
         <span class="chip-tag">Seed</span>
@@ -327,15 +318,15 @@
       </div>
     </div>
 
-    <div class="foot-note" data-reveal><span>This raise funds <b>01–04</b> · Seed unlocks <b>05</b></span><span>Build · Prove · Scale</span></div>
+    <div class="foot-note" data-reveal style="--i:7"><span>This raise funds <b>01–04</b> · Seed unlocks <b>05</b></span><span>Build · Prove · Scale</span></div>
   </div>
 </section>
 
-<!-- ================= 06 TEAM ================= -->
-<section class="slide" id="team">
+<!-- ================= TEAM ================= -->
+<section class="slide" id="team" data-label="Team">
   <div class="wrap">
     <div class="slide-head" data-reveal>
-      <div class="eyebrow">06 · Team</div>
+      <div class="eyebrow">Team</div>
       <h2>ML research and production HFT experience</h2>
     </div>
     <div class="team">
@@ -358,17 +349,14 @@
         <p>Masters in Robotics Research, focused on sequential decision-making.</p>
       </article>
     </div>
+    <div class="footer" data-reveal style="--i:4">
+      <a class="wordmark" href="#top">pi<span class="star">*</span></a>
+      <div class="sig"><b>Market-native intelligence</b> · 2026</div>
+    </div>
   </div>
 </section>
 
-</main>
-
-<footer class="footer">
-  <div class="wrap">
-    <a class="wordmark" href="#top">pi<span class="star">*</span></a>
-    <div class="sig"><b>Market-native intelligence</b> · 2026</div>
-  </div>
-</footer>
+</div>
 
 <script src="app.js"></script>
 </body>
