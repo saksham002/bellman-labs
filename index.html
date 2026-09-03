@@ -1,700 +1,375 @@
-<title>Bellman Labs</title>
-<style>
-  :root {
-    --ink: #0A0E16;
-    --surface: #0E141F;
-    --line: #1B2333;
-    --text: #E7EAF0;
-    --muted: #8B94A5;
-    --faint: #575F70;
-    --gold: #C39A55;
-    --gold-dim: #7A6136;
-    --ask: #5C7590;
-    --up: #3E9B6E;
-    --down: #B85450;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
-  }
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pi* — The first high-frequency AI trading model</title>
+<meta name="description" content="pi* is market-native intelligence: an end-to-end model that reads the raw order book packet by packet and sends orders, trained with the LLM recipe of imitation learning then reinforcement learning.">
+<meta name="theme-color" content="#0A0E16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230A0E16'/%3E%3Ctext x='32' y='46' font-family='Courier New,monospace' font-weight='700' font-size='40' text-anchor='middle' fill='%23E7EAF0'%3Epi%3Ctspan fill='%23C39A55'%3E*%3C/tspan%3E%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
-  }
-
-  body {
-    background: var(--ink);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 1.0625rem;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  ::selection { background: var(--gold); color: var(--ink); }
-
-  a { color: var(--gold); text-decoration: none; }
-  a:hover, a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
-  a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
-
-  .wrap {
-    max-width: 66rem;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  /* ---------- top bar ---------- */
-  header.top {
-    border-bottom: 1px solid var(--line);
-    position: sticky;
-    top: 0;
-    background: rgba(10, 14, 22, 0.9);
-    backdrop-filter: blur(8px);
-    z-index: 10;
-  }
-  .top-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.05rem 0;
-    flex-wrap: wrap;
-  }
-  .wordmark {
-    font-weight: 700;
-    font-size: 0.9375rem;
-    letter-spacing: 0.22em;
-    color: var(--text);
-  }
-  nav.sections {
-    display: flex;
-    gap: 1.75rem;
-    overflow-x: auto;
-  }
-  nav.sections a {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
-    color: var(--muted);
-    padding: 0.35rem 0;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-  }
-  nav.sections a:hover { color: var(--text); text-decoration: none; }
-  nav.sections a[aria-current="page"] {
-    color: var(--text);
-    border-bottom-color: var(--gold);
-  }
-
-  /* ---------- panels ---------- */
-  main { min-height: 68vh; }
-  .panel { display: none; }
-  .panel.active { display: block; animation: panelIn 0.35s ease; }
-  @keyframes panelIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: none; }
-  }
-  .panel-body { padding: 5rem 0 6rem; }
-
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    font-weight: 400;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 1.5rem;
-  }
-
-  /* ---------- hero / overview ---------- */
-  .hero { padding: 7rem 0 0; }
-
-  h1 {
-    font-weight: 700;
-    font-size: clamp(2.6rem, 6.2vw, 4.6rem);
-    line-height: 1.06;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-    max-width: 16ch;
-  }
-
-  .lede {
-    margin-top: 2rem;
-    max-width: 36rem;
-    font-size: 1.25rem;
-    line-height: 1.6;
-    color: var(--muted);
-    font-weight: 400;
-  }
-  .lede strong { color: var(--text); font-weight: 600; }
-
-  .hero-cta {
-    margin-top: 2.5rem;
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    color: var(--gold);
-    border: 1px solid var(--gold-dim);
-    padding: 0.8rem 1.4rem;
-  }
-  .hero-cta:hover, .hero-cta:focus-visible {
-    text-decoration: none;
-    color: var(--ink);
-    background: var(--gold);
-    border-color: var(--gold);
-  }
-
-  .tape {
-    margin-top: 5.5rem;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    background: var(--surface);
-    position: relative;
-  }
-  .tape canvas { display: block; width: 100%; height: 200px; }
-  .tape-label {
-    position: absolute;
-    top: 0.7rem; left: 2rem;
-    font-family: var(--mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    color: var(--faint);
-  }
-  .tape-label b { color: var(--gold-dim); font-weight: 400; }
-
-  /* ---------- shared section type ---------- */
-  h2 {
-    font-weight: 700;
-    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
-    letter-spacing: -0.02em;
-    line-height: 1.18;
-    text-wrap: balance;
-    max-width: 26ch;
-    margin-bottom: 1.75rem;
-  }
-
-  .prose { max-width: 40rem; display: flex; flex-direction: column; gap: 1.25rem; }
-  .prose p { color: var(--muted); }
-  .prose p strong { color: var(--text); font-weight: 600; }
-  .prose .pull {
-    color: var(--text);
-    font-size: 1.25rem;
-    line-height: 1.55;
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    border-left: 2px solid var(--gold);
-    padding-left: 1.5rem;
-  }
-
-  /* ---------- diagrams ---------- */
-  .diagram { margin-top: 3.5rem; overflow-x: auto; }
-  .diagram svg {
-    display: block;
-    width: 100%;
-    min-width: 640px;
-    height: auto;
-  }
-  .sv-stream {
-    stroke: var(--gold-dim);
-    fill: none;
-    stroke-width: 1.5;
-    stroke-dasharray: 6 5;
-    animation: streamFlow 1.1s linear infinite;
-  }
-  .sv-stream.s2 { animation-duration: 1.5s; }
-  .sv-stream.s3 { animation-duration: 0.9s; }
-  .sv-stream.s4 { animation-duration: 1.3s; }
-  @keyframes streamFlow { to { stroke-dashoffset: -11; } }
-  .sv-box { fill: var(--surface); stroke: var(--line); }
-  .sv-box.em { stroke: var(--gold); stroke-width: 1.5; }
-  .sv-title {
-    fill: var(--text);
-    font-family: var(--sans);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  .sv-gold-label {
-    fill: var(--gold);
-    font-family: var(--mono);
-    letter-spacing: 0.18em;
-  }
-  .sv-label {
-    fill: var(--muted);
-    font-family: var(--mono);
-    letter-spacing: 0.14em;
-  }
-  .sv-dim { fill: var(--faint); }
-  .sv-out { stroke: var(--gold); stroke-width: 2; }
-  .sv-rail { stroke: var(--gold); stroke-width: 2; }
-  .sv-rail.dashed { stroke: var(--faint); stroke-dasharray: 3 6; }
-  .sv-bracket { stroke: var(--line); stroke-width: 1; fill: none; }
-
-  /* conventional-pipeline strip under the thesis diagram */
-  .flow {
-    display: grid;
-    grid-template-columns: 9rem 1fr;
-    gap: 1.5rem;
-    align-items: center;
-    padding: 1.5rem 0;
-    margin-top: 1.5rem;
-    border-top: 1px solid var(--line);
-  }
-  .flow-tag {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.18em;
-    color: var(--faint);
-  }
-  .chain {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-  .node {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    padding: 0.55rem 0.9rem;
-    border: 1px dashed var(--line);
-    color: var(--faint);
-    white-space: nowrap;
-  }
-  .arrow {
-    font-family: var(--mono);
-    font-size: 0.8125rem;
-    color: var(--faint);
-  }
-
-  /* ---------- approach columns ---------- */
-  .pillars {
-    margin-top: 3rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-  }
-  .pillar { border-top: 1px solid var(--line); padding-top: 1.5rem; }
-  .pillar h3 {
-    font-size: 1.0625rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
-    margin-bottom: 0.8rem;
-  }
-  .pillar p { font-size: 0.9375rem; color: var(--muted); }
-
-  /* ---------- funding ---------- */
-  .uses { margin-top: 3rem; border-top: 1px solid var(--line); }
-  .use {
-    display: grid;
-    grid-template-columns: 12rem 1fr;
-    gap: 2rem;
-    padding: 1.75rem 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .use dt {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.18em;
-    color: var(--gold);
-    padding-top: 0.35rem;
-  }
-  .use dd { color: var(--muted); font-size: 1rem; max-width: 40rem; }
-  .use dd strong { color: var(--text); font-weight: 600; }
-
-  .milestone {
-    margin-top: 2.5rem;
-    max-width: 44rem;
-    display: grid;
-    grid-template-columns: 12rem 1fr;
-    gap: 2rem;
-  }
-  .milestone dt {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.18em;
-    color: var(--gold);
-    padding-top: 0.35rem;
-  }
-  .milestone dd {
-    color: var(--text);
-    font-size: 1.125rem;
-    line-height: 1.55;
-    font-weight: 500;
-  }
-  .milestone dd .dim { color: var(--muted); font-weight: 400; }
-
-  /* ---------- team ---------- */
-  .founders {
-    margin-top: 3rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-  }
-  .founder { border-top: 1px solid var(--line); padding-top: 1.5rem; }
-  .founder .name {
-    font-size: 1.125rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .founder .cred {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.09em;
-    color: var(--gold-dim);
-    margin: 0.55rem 0 0.9rem;
-    text-transform: uppercase;
-  }
-  .founder p { font-size: 0.9375rem; color: var(--muted); }
-
-  /* ---------- footer ---------- */
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 2.25rem 0 3rem;
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    color: var(--faint);
-  }
-
-  @media (max-width: 760px) {
-    .pillars, .founders { grid-template-columns: 1fr; gap: 2rem; }
-    .use, .milestone { grid-template-columns: 1fr; gap: 0.5rem; }
-    .flow { grid-template-columns: 1fr; gap: 0.75rem; }
-    .hero { padding-top: 4rem; }
-    .panel-body { padding: 3.5rem 0 4.5rem; }
-  }
-</style>
-
-<header class="top">
-  <div class="wrap top-inner">
-    <span class="wordmark">BELLMAN LABS</span>
-    <nav class="sections" aria-label="Sections">
-      <a href="#overview" data-panel="overview">OVERVIEW</a>
-      <a href="#thesis" data-panel="thesis">THESIS</a>
-      <a href="#approach" data-panel="approach">APPROACH</a>
-      <a href="#funding" data-panel="funding">FUNDING</a>
-      <a href="#team" data-panel="team">TEAM</a>
-    </nav>
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="pi star, home">pi<span class="star">*</span></a>
+    <ul class="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#training">Training</a></li>
+      <li><a href="#why-now">Why now</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
   </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <canvas id="book" aria-hidden="true"></canvas>
+  <div class="book-probe" id="probe" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="brand" aria-hidden="true">pi<span class="star">*</span></div>
+    <h1>The first high-frequency AI trading model</h1>
+    <div class="tagline" id="tagline">MARKET-NATIVE INTELLIGENCE</div>
+  </div>
+  <div class="hero-cue" aria-hidden="true"><i></i><span>Live book</span></div>
 </header>
 
 <main>
-  <section class="panel" id="panel-overview">
-    <div class="wrap hero">
-      <p class="eyebrow">Market-native intelligence</p>
-      <h1>A foundation model that trades.</h1>
-      <p class="lede">Language models became general by pretraining on raw text. Markets produce a larger, faster, harder stream, and it has no foundation model of its own. <strong>We are building it.</strong></p>
-      <a class="hero-cta" href="#thesis">READ THE THESIS →</a>
+
+<!-- ================= 01 PROBLEM ================= -->
+<section class="slide" id="problem">
+  <div class="wrap">
+    <div class="slide-head" data-reveal>
+      <div class="eyebrow">01 · The problem</div>
+      <h2>The <em>problem</em> with classical HFT</h2>
+      <p class="lede">A classical high-frequency stack is a chain of hand-written stages. Tap a stage to see where the human sits.</p>
     </div>
-    <div class="tape" aria-hidden="true">
-      <canvas id="tape"></canvas>
-      <span class="tape-label">SIM <b>·</b> L2 ORDER FLOW <b>·</b> ILLUSTRATIVE</span>
+
+    <div class="pipeline" id="pipeline">
+      <div class="stage" data-reveal style="--i:0" data-key="data"><button class="box">Market data</button></div>
+      <div class="stage problem on" data-reveal style="--i:1" data-key="features"><button class="box">Hand-built<br>features</button></div>
+      <div class="stage" data-reveal style="--i:2" data-key="model"><button class="box">Predictive model</button></div>
+      <div class="stage" data-reveal style="--i:3" data-key="signals"><button class="box">Signals</button></div>
+      <div class="stage" data-reveal style="--i:4" data-key="execution"><button class="box">Execution</button></div>
     </div>
-    <div style="padding-bottom: 5rem;"></div>
-  </section>
-
-  <section class="panel" id="panel-thesis">
-    <div class="wrap panel-body">
-      <h2>Trained on the market itself.</h2>
-      <div class="prose">
-        <p>Today's quantitative pipelines compress the market before a model ever sees it: raw order flow is distilled into hand-engineered signals, and the model's job is reduced to weighing them. Every feature is a human prior, and every prior is a ceiling.</p>
-        <p class="pull">We train on the raw stream — quotes, trades, order flow at tick resolution — and the model outputs trading decisions.</p>
-        <p>Reinforcement learning closes the loop: the objective is risk-adjusted performance, learned end-to-end against realistic market simulation. The shift that carried language models past feature-engineered NLP applies equally to markets. Executing it demands frontier-scale ML and microstructure fluency in one team.</p>
-      </div>
-      <div class="diagram" role="img" aria-label="Raw market streams — the level-2 order book, quotes, trades, and order flow — converge into one market-native, RL-trained foundation model, which outputs trading decisions: quotes, orders, and positions. Below, for contrast: the conventional pipeline routes market data through hand-built features and a predictive model to produce signals for a separate execution layer.">
-        <svg viewBox="0 0 940 330" aria-hidden="true">
-          <defs>
-            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-              <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#C39A55" flood-opacity="0.28"/>
-            </filter>
-            <marker id="head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-              <path d="M0,0 L10,5 L0,10 z" fill="#C39A55"/>
-            </marker>
-          </defs>
-
-          <!-- input streams -->
-          <text class="sv-label" font-size="11" x="60" y="52">L2 ORDER BOOK</text>
-          <path class="sv-stream"    d="M60,70 C 210,70 250,140 350,148"/>
-          <text class="sv-label" font-size="11" x="60" y="122">QUOTES</text>
-          <path class="sv-stream s2" d="M60,140 C 200,140 250,158 350,161"/>
-          <text class="sv-label" font-size="11" x="60" y="192">TRADES</text>
-          <path class="sv-stream s3" d="M60,210 C 200,210 250,178 350,174"/>
-          <text class="sv-label" font-size="11" x="60" y="262">ORDER FLOW</text>
-          <path class="sv-stream s4" d="M60,280 C 210,280 250,196 350,187"/>
-
-          <!-- foundation model -->
-          <rect class="sv-box em" x="350" y="98" width="266" height="140" filter="url(#glow)"/>
-          <text class="sv-title" font-size="24" x="483" y="162" text-anchor="middle">FOUNDATION MODEL</text>
-          <text class="sv-gold-label" font-size="11" x="483" y="196" text-anchor="middle">MARKET-NATIVE · RL-TRAINED</text>
-
-          <!-- output -->
-          <line class="sv-out" x1="616" y1="168" x2="722" y2="168" marker-end="url(#head)"/>
-          <rect class="sv-box" x="732" y="118" width="172" height="100"/>
-          <text class="sv-title" font-size="17" x="818" y="160" text-anchor="middle">TRADING</text>
-          <text class="sv-title" font-size="17" x="818" y="184" text-anchor="middle">DECISIONS</text>
-          <text class="sv-label sv-dim" font-size="10" x="818" y="248" text-anchor="middle">QUOTES · ORDERS · POSITIONS</text>
-        </svg>
-        <div class="flow">
-          <span class="flow-tag">CONVENTIONAL</span>
-          <div class="chain">
-            <span class="node">MARKET DATA</span><span class="arrow">→</span>
-            <span class="node">HAND-BUILT FEATURES</span><span class="arrow">→</span>
-            <span class="node">PREDICTIVE MODEL</span><span class="arrow">→</span>
-            <span class="node">SIGNALS</span><span class="arrow">→</span>
-            <span class="node">EXECUTION</span>
-          </div>
-        </div>
-      </div>
+    <div class="stage-detail problem" id="stage-detail" data-reveal style="--i:5" aria-live="polite">
+      <b>Hand-built features</b>Order-flow imbalance, microprice, realized volatility, pair spreads. Each one is a formula a person wrote down. The model can only see the market through them.
     </div>
-  </section>
 
-  <section class="panel" id="panel-approach">
-    <div class="wrap panel-body">
-      <h2>Three commitments.</h2>
-      <div class="pillars">
-        <div class="pillar">
-          <h3>Market-native pretraining</h3>
-          <p>A sequence model pretrained on raw, tick-level market data: order books, trades, flow. The representation is learned from the stream itself.</p>
-        </div>
-        <div class="pillar">
-          <h3>Decision-native output</h3>
-          <p>The model emits actions — quotes, orders, positions — trained with RL against profit and risk. Alpha, sizing, and execution live in one policy.</p>
-        </div>
-        <div class="pillar">
-          <h3>Deep, not wide</h3>
-          <p>One market, one asset class, mastered first. Depth compounds. Expansion follows once the first market is won.</p>
-        </div>
+    <div class="thesis" data-reveal>
+      <div class="thesis-lines">
+        <div>Every feature is a human prior.</div>
+        <div class="ceiling">Every prior is a ceiling</div>
       </div>
+      <svg class="ceiling-chart" viewBox="0 0 520 300" role="img" aria-label="Conceptual chart: a feature-based pipeline flattens under a human-prior ceiling while an end-to-end model keeps improving with data and compute.">
+        <line class="axis" x1="40" y1="260" x2="500" y2="260"/>
+        <line class="axis" x1="40" y1="20" x2="40" y2="260"/>
+        <text class="lbl" x="500" y="284" text-anchor="end">DATA · COMPUTE →</text>
+        <text class="lbl" x="34" y="30" text-anchor="end" transform="rotate(-90 34 30)" dx="-4">CAPABILITY ↑</text>
+        <line class="cap" x1="40" y1="150" x2="500" y2="150"/>
+        <text class="lbl" x="48" y="142" fill="#7A6136">HUMAN-PRIOR CEILING</text>
+        <path class="classical" d="M40 258 C 120 230, 170 180, 240 165 S 420 152, 500 151"/>
+        <path class="e2e" d="M40 258 C 160 250, 250 220, 330 150 S 450 60, 500 30"/>
+        <text class="tag" x="360" y="178" fill="#5C7590">HAND-BUILT FEATURES</text>
+        <text class="tag" x="404" y="52" fill="#C39A55" text-anchor="end">END-TO-END · pi*</text>
+      </svg>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="panel" id="panel-funding">
-    <div class="wrap panel-body">
-      <h2>From thesis to backtested model.</h2>
-      <div class="prose">
-        <p>Before this system touches capital, it must earn its way through years of history. The pre-seed round funds that proof.</p>
-      </div>
-      <dl class="uses">
-        <div class="use">
-          <dt>DATA</dt>
-          <dd><strong>Licensed historical market data</strong> at tick-level depth — the pretraining corpus. Years of microstructure across the target asset class, the market-native equivalent of a web-scale text crawl.</dd>
-        </div>
-        <div class="use">
-          <dt>COMPUTE</dt>
-          <dd><strong>Training and simulation infrastructure</strong> — pretraining the foundation model, then RL fine-tuning inside a high-fidelity market simulator built from that same historical stream.</dd>
-        </div>
-        <div class="use">
-          <dt>VALIDATION</dt>
-          <dd><strong>Adversarial backtesting</strong> — out-of-sample, regime-split, cost-aware. We hold ourselves to prop-desk standards of evidence.</dd>
-        </div>
-      </dl>
-      <div class="diagram" role="img" aria-label="Roadmap: the pre-seed phase covers data acquisition, pretraining, RL fine-tuning, and ends at a backtested model. The seed phase takes the model to live capital.">
-        <svg viewBox="0 0 940 200" aria-hidden="true">
-          <!-- rail -->
-          <line class="sv-rail" x1="60" y1="100" x2="700" y2="100"/>
-          <line class="sv-rail dashed" x1="700" y1="100" x2="880" y2="100"/>
-
-          <!-- nodes -->
-          <circle cx="60"  cy="100" r="5" fill="#C39A55"/>
-          <circle cx="273" cy="100" r="5" fill="#C39A55"/>
-          <circle cx="487" cy="100" r="5" fill="#C39A55"/>
-          <circle cx="700" cy="100" r="6" fill="#C39A55"/>
-          <circle cx="700" cy="100" r="13" fill="none" stroke="#C39A55" stroke-width="1.5"/>
-          <circle cx="880" cy="100" r="5" fill="none" stroke="#575F70" stroke-width="1.5"/>
-
-          <!-- labels -->
-          <text class="sv-label" font-size="12" x="60" y="66" text-anchor="start">DATA</text>
-          <text class="sv-label" font-size="12" x="273" y="66" text-anchor="middle">PRETRAIN</text>
-          <text class="sv-label" font-size="12" x="487" y="66" text-anchor="middle">RL FINE-TUNE</text>
-          <text class="sv-gold-label" font-size="12" x="700" y="66" text-anchor="middle">BACKTESTED MODEL</text>
-          <text class="sv-label sv-dim" font-size="12" x="880" y="66" text-anchor="end">LIVE CAPITAL</text>
-
-          <!-- phase brackets -->
-          <path class="sv-bracket" d="M60,140 L60,150 L700,150 L700,140"/>
-          <text class="sv-gold-label" font-size="11" x="380" y="176" text-anchor="middle">PRE-SEED</text>
-          <path class="sv-bracket" d="M712,140 L712,150 L880,150 L880,140"/>
-          <text class="sv-label sv-dim" font-size="11" x="796" y="176" text-anchor="middle">SEED</text>
-        </svg>
-      </div>
-      <dl class="milestone">
-        <dt>MILESTONE</dt>
-        <dd>A market-native foundation model, specialized to one asset class, with a rigorously backtested trading record. <span class="dim">The seed round takes it to market.</span></dd>
-      </dl>
+<!-- ================= 02 SOLUTION ================= -->
+<section class="slide" id="solution">
+  <div class="wrap">
+    <div class="slide-head" data-reveal>
+      <div class="eyebrow">02 · The solution</div>
+      <h2>Orderbook data in. Orders out</h2>
+      <p class="lede">No features. The raw exchange feed streams into one model, packet by packet. The model keeps a KV cache of the book's history and emits an order when it reads a critical event. Click a feed type to inject a packet.</p>
     </div>
-  </section>
 
-  <section class="panel" id="panel-team">
-    <div class="wrap panel-body">
-      <h2>Frontier ML meets the trading floor.</h2>
-      <div class="founders">
-        <div class="founder">
-          <p class="name">Saksham Singh</p>
-          <p class="cred">AIRe, CMU · M.S. Machine Learning · ex-Quadeye</p>
-          <p>Formerly at Quadeye, one of India's leading proprietary trading firms, working on production high-frequency trading systems.</p>
-        </div>
-        <div class="founder">
-          <p class="name">Bhavya Agrawalla</p>
-          <p class="cred">AIRe, CMU · Ph.D., Computer Science Dept.</p>
-          <p>Doctoral researcher in the Computer Science Department at Carnegie Mellon.</p>
-        </div>
-        <div class="founder">
-          <p class="name">Kshitiz</p>
-          <p class="cred">AIRe, CMU · M.S. Robotics</p>
-          <p>Roboticist by training, specializing in sequential decision-making under uncertainty.</p>
+    <div class="flow-wrap" data-reveal>
+      <div class="diagram-scroll"><svg class="flow" id="flow" viewBox="0 0 1200 330" role="img" aria-label="Order book feed streams add, cancel, modify and trade packets into a model with a persistent KV cache. On a critical event the model emits a readout token with price and direction, and an order is sent.">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5C7590"/></marker>
+          <marker id="arr-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#C39A55"/></marker>
+        </defs>
+
+        <!-- invisible motion paths -->
+        <path id="p-feed-0" d="M190 101 H225 V182 H530" fill="none" stroke="none"/>
+        <path id="p-feed-1" d="M190 155 H225 V182 H530" fill="none" stroke="none"/>
+        <path id="p-feed-2" d="M190 209 H225 V182 H530" fill="none" stroke="none"/>
+        <path id="p-feed-3" d="M190 263 H225 V182 H530" fill="none" stroke="none"/>
+        <path id="p-out" d="M780 182 H1100" fill="none" stroke="none"/>
+
+        <text class="lbl" x="0" y="62">ORDER BOOK FEED</text>
+
+        <!-- wires -->
+        <path class="wire" d="M190 101 H225 V263 M190 155 H225 M190 209 H225 M190 263 H225"/>
+        <path class="wire" d="M225 182 H260" marker-end="url(#arr)"/>
+        <path class="wire" d="M460 182 H530" marker-end="url(#arr)"/>
+        <path class="wire" d="M780 182 H900" marker-end="url(#arr)"/>
+        <path class="wire" d="M1070 182 H1100" marker-end="url(#arr)"/>
+        <path class="kv" d="M700 232 V280 H610 V236" marker-end="url(#arr-gold)"/>
+        <text class="lbl" x="655" y="304" text-anchor="middle" fill="#C39A55">KV CACHE PERSISTS</text>
+
+        <!-- feeds -->
+        <g class="feed" data-i="0" data-k="A" tabindex="0" role="button" aria-label="Inject add-order packet"><rect class="box-r" x="0" y="80" width="190" height="42"/><text class="box-t" x="95" y="106" style="font-weight:400;font-size:12px">ADD ORDER</text></g>
+        <g class="feed" data-i="1" data-k="C" tabindex="0" role="button" aria-label="Inject cancel packet"><rect class="box-r" x="0" y="134" width="190" height="42"/><text class="box-t" x="95" y="160" style="font-weight:400;font-size:12px">CANCEL</text></g>
+        <g class="feed" data-i="2" data-k="M" tabindex="0" role="button" aria-label="Inject modify packet"><rect class="box-r" x="0" y="188" width="190" height="42"/><text class="box-t" x="95" y="214" style="font-weight:400;font-size:12px">MODIFY</text></g>
+        <g class="feed" data-i="3" data-k="T" tabindex="0" role="button" aria-label="Inject trade-print packet"><rect class="box-r" x="0" y="242" width="190" height="42"/><text class="box-t" x="95" y="268" style="font-weight:400;font-size:12px">TRADE PRINT</text></g>
+
+        <!-- streamed -->
+        <g><rect class="box-r" x="260" y="147" width="200" height="70"/><text class="box-t" x="360" y="178">STREAMED IN</text><text class="box-t" x="360" y="198">PACKET BY PACKET</text></g>
+
+        <!-- model -->
+        <g class="model" id="model"><rect class="box-r" x="530" y="132" width="250" height="100"/><text class="box-t" x="655" y="158">MODEL</text><text class="box-s" x="655" y="178">MAINTAINS KV CACHE</text><text class="box-s" x="655" y="193">+ ROLLING CONTEXT</text><g id="kvstrip"></g></g>
+
+        <text class="crit" id="crit" x="840" y="170">CRITICAL EVENT</text>
+
+        <!-- readout -->
+        <g><rect class="box-r" x="900" y="147" width="170" height="70"/><text class="box-t" x="985" y="178">READOUT TOKEN</text><text class="box-s" x="985" y="198">PRICE + DIRECTION</text></g>
+
+        <!-- order -->
+        <g class="order" id="order"><rect class="box-r" x="1100" y="147" width="100" height="70"/><text class="box-t" x="1150" y="178">ORDER</text><text class="box-s" x="1150" y="198">ORDER SENT</text></g>
+
+        <g id="packets"></g>
+      </svg></div>
+
+      <div class="flow-controls">
+        <div class="legend"><span>Forward path</span><span class="kv">KV cache loop</span></div>
+        <div class="ctl" id="speed">
+          <span>Feed</span>
+          <button data-rate="0" id="pause">Pause</button>
+          <button data-rate="1" class="on">1×</button>
+          <button data-rate="4">4×</button>
+          <button data-rate="16">16×</button>
         </div>
       </div>
+      <div class="tape">
+        <div><h4>Packets in</h4><ol id="tape-in"></ol></div>
+        <div><h4>Orders out</h4><ol id="tape-out"></ol></div>
+      </div>
+      <p class="hint">Illustrative simulation. Packets are synthetic; orders are emitted by a toy rule, not the pi* model.</p>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ================= 03 TRAINING ================= -->
+<section class="slide" id="training">
+  <div class="wrap">
+    <div class="slide-head" data-reveal>
+      <div class="eyebrow">03 · The training stack</div>
+      <h2>LLM recipe applied to HFT</h2>
+      <p class="lede">The same two-phase recipe that produced today's language models: pretrain on what experts already do, then let the model practice against a simulator until it finds strategies no human wrote down.</p>
+    </div>
+
+    <div class="train-wrap" data-reveal>
+      <div class="stepper" id="stepper" role="tablist" aria-label="Training phases">
+        <button data-n="01" data-step="1" class="on" role="tab" aria-selected="true">Imitation learning</button>
+        <button data-n="02" data-step="2" role="tab" aria-selected="false">Reinforcement learning</button>
+        <button class="replay" id="replay">Replay</button>
+      </div>
+
+      <div class="diagram-scroll"><svg class="train" id="train" viewBox="0 0 1200 390" role="img" aria-label="Human-generated alphas feed phase one, imitation learning, which produces a base policy that mimics expert trading. Phase two, reinforcement learning against trading simulators in a self-play loop, discovers new alphas beyond human play.">
+        <defs>
+          <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#C39A55"/></marker>
+        </defs>
+        <text class="lbl" x="0" y="42">HUMAN-GENERATED ALPHAS</text>
+
+        <g class="frame-1"><rect class="frame" x="270" y="44" width="490" height="240"/><text class="phase-lbl" x="515" y="30">PHASE 01</text></g>
+        <g class="frame-2"><rect class="frame" x="820" y="44" width="380" height="240"/><text class="phase-lbl" x="1010" y="30">PHASE 02</text></g>
+
+        <!-- alphas -->
+        <g class="alphas" id="alphas">
+          <g class="alpha"><rect class="pill" x="0" y="60" width="200" height="36"/><text class="pill-t" x="100" y="78">ORDER BOOK ALPHAS</text></g>
+          <g class="alpha"><rect class="pill" x="0" y="108" width="200" height="36"/><text class="pill-t" x="100" y="126">VOLATILITY ALPHAS</text></g>
+          <g class="alpha"><rect class="pill" x="0" y="156" width="200" height="36"/><text class="pill-t" x="100" y="174">PAIR ALPHAS</text></g>
+          <g class="alpha"><rect class="pill" x="0" y="204" width="200" height="36"/><text class="pill-t" x="100" y="222">SEQUENCE ALPHAS</text></g>
+          <g class="dots"><circle cx="100" cy="254" r="2"/><circle cx="100" cy="266" r="2"/><circle cx="100" cy="278" r="2"/></g>
+          <g class="disc" id="disc-1"><rect class="pill" x="0" y="292" width="200" height="36"/><text class="pill-t" x="100" y="310">α₅ · DISCOVERED</text></g>
+          <g class="disc" id="disc-2"><rect class="pill" x="0" y="340" width="200" height="36"/><text class="pill-t" x="100" y="358">α₆ · DISCOVERED</text></g>
+        </g>
+
+        <!-- wires -->
+        <path class="wire draw" id="w-alphas" d="M200 78 H232 V222 M200 126 H232 M200 174 H232 M200 222 H232"/>
+        <path class="wire draw" id="w-in" d="M232 150 H300" marker-end="url(#arr-g)"/>
+        <path class="wire draw" id="w-il" d="M470 150 H530" marker-end="url(#arr-g)"/>
+        <path class="wire draw" id="w-bp" d="M730 150 H850" marker-end="url(#arr-g)"/>
+        <path class="wire draw" id="w-rl" d="M1010 150 H1050" marker-end="url(#arr-g)"/>
+
+        <!-- phase 1 nodes -->
+        <g class="p1" id="p1">
+          <g><rect class="node" x="300" y="110" width="170" height="80"/><text class="node-t" x="385" y="146">IMITATION</text><text class="node-t" x="385" y="166">LEARNING</text></g>
+          <g><rect class="node" x="530" y="110" width="200" height="80"/><text class="node-t" x="630" y="140">BASE POLICY</text><text class="node-s" x="630" y="158">MIMICS EXPERT</text><text class="node-s" x="630" y="172">TRADING BEHAVIOR</text></g>
+        </g>
+
+        <!-- phase 2 nodes -->
+        <g class="p2" id="p2">
+          <g><rect class="node rl" x="850" y="100" width="160" height="100"/><text class="node-t" x="930" y="136">REINFORCEMENT</text><text class="node-t" x="930" y="154">LEARNING</text><text class="node-s" x="930" y="176">EXPLORATION</text></g>
+          <path class="loop" d="M960 200 V240 H900 V204" marker-end="url(#arr-g)"/>
+          <text class="lbl" x="930" y="262" text-anchor="middle" fill="#C39A55">TRADING SIMULATORS</text>
+          <text class="lbl" x="930" y="278" text-anchor="middle" fill="#C39A55">SELF-PLAY LOOP</text>
+          <g><rect class="node new" x="1050" y="100" width="130" height="100"/><text class="node-t green" x="1115" y="140">NEW</text><text class="node-t green" x="1115" y="158">ALPHAS</text><text class="node-s" x="1115" y="180">BEYOND HUMAN PLAY</text></g>
+        </g>
+      </svg></div>
+
+      <div class="legend" style="margin-top:18px"><span>Training pipeline</span><span class="kv">Self-improvement</span></div>
+      <p class="step-copy" id="step-copy"><b>Phase 01 · Imitation learning.</b> Order-book, volatility, pair and sequence alphas that people already trade are the pretraining corpus. The base policy learns to mimic expert trading behavior directly from the raw feed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 WHY NOW ================= -->
+<section class="slide" id="why-now">
+  <div class="wrap">
+    <div class="slide-head" data-reveal>
+      <div class="eyebrow">04 · Why now</div>
+      <h2>Faster simulation. Ultra-low latency inference</h2>
+    </div>
+
+    <div data-reveal>
+      <div class="rail" aria-hidden="true">
+        <div class="line"></div>
+        <div class="pin train">TRAIN</div>
+        <div class="pin deploy">DEPLOY</div>
+      </div>
+    </div>
+
+    <div class="cards2">
+      <article class="card scale" data-reveal style="--i:1">
+        <div class="k">Scalable learning</div>
+        <h3>GPU-native market simulation</h3>
+        <div class="big">SCALE</div>
+        <div class="sub">Parallel books · On-policy RL</div>
+        <div class="viz"><canvas id="books-grid" aria-label="Many small order books simulating in parallel"></canvas></div>
+        <p>Simulate many strategies in parallel. Keep rollouts and updates on the GPU.</p>
+        <div class="eg">E.g. JAX-LOB (GPU-native RL)</div>
+      </article>
+
+      <article class="card act" data-reveal style="--i:2">
+        <div class="k">Deployable inference</div>
+        <h3>Ultrafast inference hardware</h3>
+        <div class="big">ACT</div>
+        <div class="sub">Model + Memory + Compute</div>
+        <div class="viz">
+          <svg class="chip" viewBox="0 0 300 120" aria-label="A single chip holding model, memory and compute, with a signal pulsing from packet in to order out">
+            <path class="pin" d="M75 22V10M105 22V10M135 22V10M165 22V10M195 22V10M225 22V10M75 98v12M105 98v12M135 98v12M165 98v12M195 98v12M225 98v12"/>
+            <rect class="die" x="60" y="22" width="180" height="76" rx="4"/>
+            <path class="bus" d="M0 60H95V48H150V72H205V60H300"/>
+            <rect class="blk" x="70" y="40" width="50" height="40" rx="3"/><text class="blk-t" x="95" y="60">MODEL</text>
+            <rect class="blk" x="125" y="40" width="50" height="40" rx="3"/><text class="blk-t" x="150" y="60">MEMORY</text>
+            <rect class="blk" x="180" y="40" width="50" height="40" rx="3"/><text class="blk-t" x="205" y="60">COMPUTE</text>
+            <circle class="pulse" r="3.5"/>
+            <text class="lat" x="298" y="112">PACKET → ORDER</text>
+          </svg>
+        </div>
+        <p>Whole model baked into custom silicon. Ultrafast inference makes AI HFT viable.</p>
+        <div class="eg">E.g. Taalas: “the model is the computer”</div>
+      </article>
+    </div>
+
+    <div class="foot-note" data-reveal><span>Evidence · JAX-LOB (GPU-native RL) · Taalas (model-specific inference)</span><span>05</span></div>
+  </div>
+</section>
+
+<!-- ================= 05 ROADMAP ================= -->
+<section class="slide" id="roadmap">
+  <div class="wrap">
+    <div class="slide-head" data-reveal>
+      <div class="eyebrow">05 · Roadmap</div>
+      <h2>The pre-seed milestone is a backtested model</h2>
+    </div>
+
+    <div data-reveal>
+      <div class="bands" aria-hidden="true"><span>Build</span><span class="prove">Prove</span><span class="scale">Scale</span></div>
+      <div class="road-rail" aria-hidden="true">
+        <div class="solid"></div><div class="dashed"></div>
+        <div class="n" style="left:10%;transition-delay:.3s">01</div>
+        <div class="n" style="left:30%;transition-delay:.6s">02</div>
+        <div class="n" style="left:50%;transition-delay:.9s">03</div>
+        <div class="n cur" style="left:70%;transition-delay:1.2s">04</div>
+        <div class="n next" style="left:90%;transition-delay:1.8s">05</div>
+      </div>
+    </div>
+
+    <div class="milestones">
+      <div class="ms" data-reveal style="--i:1">
+        <div class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+        <h3>Data</h3><p>books, orders, fills</p>
+        <div class="status">This raise</div>
+      </div>
+      <div class="ms" data-reveal style="--i:2">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="4" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="12" cy="12" r="1.2"/><path d="M5.6 10.8L10.4 6.2M5.6 13.2l4.8 4.6M13.6 6.2l4.8 4.6M13.6 17.8l4.8-4.6M12 7v3.8M12 13.2V17"/></svg></div>
+        <h3>Pretrain</h3><p>mimic expert trading</p>
+        <div class="status">This raise</div>
+      </div>
+      <div class="ms" data-reveal style="--i:3">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
+        <h3>Policy train</h3><p>practice in simulator</p>
+        <div class="status">This raise</div>
+      </div>
+      <div class="ms cur" data-reveal style="--i:4">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><rect x="5" y="11" width="3.5" height="10"/><rect x="10.25" y="4" width="3.5" height="17"/><rect x="15.5" y="13" width="3.5" height="8"/></svg></div>
+        <h3>Backtest</h3><p>after fees and slippage</p>
+        <span class="chip-tag">Pre-seed</span>
+        <div class="status">Milestone for this raise</div>
+      </div>
+      <div class="ms next" data-reveal style="--i:5">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="10" r="6"/><path d="M9 7v6M7 8.5h3a1.2 1.2 0 010 2.4H7"/><path d="M15.3 7.2A6 6 0 1 1 12.4 16.4"/></svg></div>
+        <h3>Live trading</h3><p>own money</p>
+        <span class="chip-tag">Seed</span>
+        <div class="status">Unlocked by seed</div>
+      </div>
+    </div>
+
+    <div class="foot-note" data-reveal><span>This raise funds <b>01–04</b> · Seed unlocks <b>05</b></span><span>Build · Prove · Scale</span></div>
+  </div>
+</section>
+
+<!-- ================= 06 TEAM ================= -->
+<section class="slide" id="team">
+  <div class="wrap">
+    <div class="slide-head" data-reveal>
+      <div class="eyebrow">06 · Team</div>
+      <h2>ML research and production HFT experience</h2>
+    </div>
+    <div class="team">
+      <article class="person" data-reveal style="--i:1">
+        <h3>Saksham Singh</h3>
+        <div class="deg">M.S. Machine Learning, CMU</div>
+        <div class="hl">Ex-Quadeye, production HFT</div>
+        <p>Built production high-frequency trading systems at one of India's leading proprietary trading firms.</p>
+      </article>
+      <article class="person" data-reveal style="--i:2">
+        <h3>Bhavya Agrawalla</h3>
+        <div class="deg">Ph.D. Computer Science, CMU</div>
+        <div class="hl">Foundation model research</div>
+        <p>Doctoral researcher in Carnegie Mellon's Computer Science Department.</p>
+      </article>
+      <article class="person" data-reveal style="--i:3">
+        <h3>Kshitiz</h3>
+        <div class="deg">M.S. Robotics, CMU</div>
+        <div class="hl">Sequential decision-making · Ex-Intel Labs</div>
+        <p>Masters in Robotics Research, focused on sequential decision-making.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<footer>
-  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
-    <span>BELLMAN LABS — 2026</span>
-    <span>CARNEGIE MELLON UNIVERSITY · PITTSBURGH, PA</span>
+<footer class="footer">
+  <div class="wrap">
+    <a class="wordmark" href="#top">pi<span class="star">*</span></a>
+    <div class="sig"><b>Market-native intelligence</b> · 2026</div>
   </div>
 </footer>
 
-<script>
-(function () {
-  /* ---------- panel navigation ---------- */
-  const PANELS = ['overview', 'thesis', 'approach', 'funding', 'team'];
-  const links = document.querySelectorAll('nav.sections a');
-
-  function show(id) {
-    if (PANELS.indexOf(id) === -1) id = 'overview';
-    PANELS.forEach(function (p) {
-      const el = document.getElementById('panel-' + p);
-      el.classList.toggle('active', p === id);
-    });
-    links.forEach(function (a) {
-      if (a.getAttribute('data-panel') === id) a.setAttribute('aria-current', 'page');
-      else a.removeAttribute('aria-current');
-    });
-    window.scrollTo(0, 0);
-    if (id === 'overview' && window.__tapeRefresh) {
-      requestAnimationFrame(window.__tapeRefresh);
-    }
-  }
-
-  function fromHash() { show(location.hash.replace('#', '') || 'overview'); }
-  window.addEventListener('hashchange', fromHash);
-  fromHash();
-
-  /* ---------- order-book tape ---------- */
-  const canvas = document.getElementById('tape');
-  const ctx = canvas.getContext('2d');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Discrete limit-order-book tape: each column is one tick of time, each row a
-  // quantized price level. Bid depth below, ask depth above, trade prints on top.
-  const CELL_W = 8, CELL_H = 10, GAP = 2;
-  let W = 0, H = 0, dpr = 1, cols = 0, rows = 0;
-
-  let midLevel = 0, spread = 1;
-  const ticks = [];
-
-  function makeTick() {
-    const r = Math.random();
-    if (r < 0.18) midLevel += 1;
-    else if (r < 0.36) midLevel -= 1;
-    if (Math.random() < 0.12) spread = 1 + Math.floor(Math.random() * 2);
-    let trade = 0;
-    if (Math.random() < 0.22) trade = Math.random() < 0.5 ? 1 : -1; // 1 = buy at ask
-    const depthSeed = Math.random() * 1000;
-    return { mid: midLevel, spread: spread, trade: trade, seed: depthSeed };
-  }
-
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = canvas.clientWidth; H = canvas.clientHeight;
-    if (W === 0) return; // panel hidden; refreshed on show
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    cols = Math.ceil(W / CELL_W) + 1;
-    rows = Math.floor(H / CELL_H);
-    while (ticks.length < cols) ticks.unshift(makeTick());
-    while (ticks.length > cols) ticks.shift();
-  }
-
-  // Deterministic per-cell noise from the column seed and row index.
-  function noise(seed, k) {
-    const x = Math.sin(seed * 12.9898 + k * 78.233) * 43758.5453;
-    return x - Math.floor(x);
-  }
-
-  function render() {
-    if (W === 0 || ticks.length === 0) return;
-    ctx.clearRect(0, 0, W, H);
-    // Recenter the visible band on the recent mid so the walk stays on screen.
-    let avg = 0;
-    for (let c = 0; c < ticks.length; c++) avg += ticks[c].mid;
-    avg /= ticks.length;
-    const centerRow = Math.round(rows / 2 + avg);
-
-    for (let c = 0; c < ticks.length; c++) {
-      const t = ticks[c];
-      const x = c * CELL_W;
-      const midRow = centerRow - Math.round(t.mid);
-      const bestAsk = midRow - t.spread;
-      const bestBid = midRow + t.spread;
-
-      for (let rIdx = 0; rIdx < rows; rIdx++) {
-        const y = rIdx * CELL_H;
-        let fill = null;
-
-        if (rIdx <= bestAsk) {
-          const dist = bestAsk - rIdx;
-          const a = Math.exp(-dist / 3.2) * (0.35 + 0.65 * noise(t.seed, rIdx));
-          if (a > 0.07) fill = 'rgba(92, 117, 144, ' + (a * 0.5).toFixed(3) + ')';
-        } else if (rIdx >= bestBid) {
-          const dist = rIdx - bestBid;
-          const a = Math.exp(-dist / 3.2) * (0.35 + 0.65 * noise(t.seed, rIdx));
-          if (a > 0.07) fill = 'rgba(195, 154, 85, ' + (a * 0.5).toFixed(3) + ')';
-        }
-        if (fill) {
-          ctx.fillStyle = fill;
-          ctx.fillRect(x, y, CELL_W - GAP, CELL_H - GAP);
-        }
-      }
-
-      if (t.trade !== 0) {
-        const tr = t.trade > 0 ? bestAsk : bestBid;
-        if (tr >= 0 && tr < rows) {
-          ctx.fillStyle = t.trade > 0 ? 'rgba(62, 155, 110, 0.9)' : 'rgba(184, 84, 80, 0.9)';
-          ctx.fillRect(x, tr * CELL_H, CELL_W - GAP, CELL_H - GAP);
-        }
-      }
-    }
-
-    // Emphasize the newest column's best bid/ask.
-    const last = ticks[ticks.length - 1];
-    const lx = (ticks.length - 1) * CELL_W;
-    const lm = centerRow - Math.round(last.mid);
-    ctx.fillStyle = '#C39A55';
-    ctx.fillRect(lx, (lm + last.spread) * CELL_H, CELL_W - GAP, CELL_H - GAP);
-    ctx.fillStyle = '#8FA5BC';
-    ctx.fillRect(lx, (lm - last.spread) * CELL_H, CELL_W - GAP, CELL_H - GAP);
-  }
-
-  window.__tapeRefresh = function () { resize(); render(); };
-
-  resize();
-  render();
-  window.addEventListener('resize', function () { resize(); render(); });
-
-  if (!reduced) {
-    let lastT = 0;
-    (function loop(now) {
-      if (now - lastT > 140) {
-        if (W === 0) resize();
-        ticks.push(makeTick());
-        ticks.shift();
-        render();
-        lastT = now;
-      }
-      requestAnimationFrame(loop);
-    })(0);
-  }
-})();
-</script>
+<script src="app.js"></script>
+</body>
+</html>
